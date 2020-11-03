@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/02 23:52:35 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:39:25 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_resize(t_all *g, int win)
 {
 
-	printf("RE-seized\n");
+	//printf("RE-seized\n");
 	return(1);
 }
 
@@ -35,19 +35,16 @@ void	ft_ray(t_all *g)
 	t_pd	dir;
 	int     i = 0;
 
-	ray_start = - fov / 2.;
-	ray_end = + fov / 2;
+	ray_start = g->dir.a - fov / 2.;
+	ray_end = g->dir.a + fov / 2;
 	
 	while (ray_start <= ray_end)
 	{
 		ray.x = g->pl.x;
 		ray.y = g->pl.y;
-		
-		dir.x = g->dir.x;
-		dir.y = g->dir.y;
 
-		dir.x = dir.x * cos(ray_start) - dir.y * sin(ray_start);
-		dir.y = dir.x * sin(ray_start) + dir.y * cos(ray_start);
+		dir.x = cos(ray_start);
+		dir.y = sin(ray_start);
 
 		while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
 		{
@@ -72,16 +69,16 @@ void	ft_dir(t_all *g)
 
 	ray.x = g->pl.x;
 	ray.y = g->pl.y;
-	g->dir.a = (g->dir.y * -1) / (sqrt(g->dir.x * g->dir.x + g->dir.y * g->dir.y));
+	//g->dir.a = acos(g->dir.x) * (g->dir.y < 0 ? 1 : -1);
 	
-	/*
+	
 	while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
 	{
-		ray.x += g->dir.x;
-		ray.y += g->dir.y;
+		ray.x += cos(g->dir.a);
+		ray.y += sin(g->dir.a);
 		ft_mlx_pixel_put(g, ray.x, ray.y, GREEN);
 	}
-	*/
+	
 }
 
 void	ft_turn(t_all *g, double c)
@@ -90,8 +87,12 @@ void	ft_turn(t_all *g, double c)
 	
 	g->dir.x =  g->dir.x * cos(c * TURN) - g->dir.y * sin(c * TURN);
 	g->dir.y =  g->dir.x * sin(c * TURN) + g->dir.y * cos(c * TURN);
-	g->dir.a = (g->dir.y * -1) / (sqrt(g->dir.x * g->dir.x + g->dir.y * g->dir.y));
-
+	dist = hypot(g->dir.x, g->dir.y);
+	g->dir.x /= dist;
+	g->dir.y /= dist;
+	
+	g->dir.a = acos(g->dir.x) * (g->dir.y < 0 ? 1 : -1);
+	printf("Player.a = %.3f\n", g->dir.a * 180 / M_PI);
 }
 
 void	ft_sideways(t_all *g, double c)
@@ -136,8 +137,6 @@ t_img	text1;
 
 	text1.ptr = mlx_xpm_file_to_image(g->mlx.ptr, "brick.xpm", &img_width, &img_height);
 	text1.adr = mlx_get_data_addr(text1.ptr, &bpp, &sl, &end);
-
-	printf("********%d %d size\n", img_width, img_height);
 
 	j = 0;
 	while (j < g->map.y)
@@ -221,9 +220,9 @@ int		ft_key(int key, void *arg)
 	else if (key == S)
 		ft_forward(arg, -1);
 	else if (key == LEFT)
-		ft_turn(arg, -1);
-	else if (key == RIGHT)
 		ft_turn(arg, 1);
+	else if (key == RIGHT)
+		ft_turn(arg, -1);
 	ft_draw(arg);
 	return (1);
 }
@@ -261,7 +260,6 @@ int		ft_fill_map(t_all *g, char *line)
 		if (!(tmp[i] = malloc(sizeof(char) * (g->map.x) + 1)))
 			return (-1); // don't forget to handle with g.err
 		ft_strlcpy(tmp[i], g->map.arr[i], g->map.x + 1);
-		printf("%d-%s", i, g->map.arr[i]);
 	}*/
 	if (!(tmp[g->map.y] = malloc(sizeof(char) * (g->map.x) + 1)))
 		return (-1); // don't forget to handle with g.err
@@ -275,9 +273,7 @@ int		ft_fill_map(t_all *g, char *line)
 
 	g->map.arr = tmp;
 
-	//printf("%p --> %p: %s", g->map.arr, g->map.arr[g->map.y], g->map.arr[g->map.y]);
 	g->map.y += 1;
-	printf("\n");
 	return (0);
 }
 
@@ -318,8 +314,8 @@ t_img	text1;
 	win.ptr = NULL;
 	img.ptr = NULL;
 	img.adr = NULL;
-	win.x = 2560;
-	win.y = 1440;
+	win.x = 1200;
+	win.y = 800;
 	img.fsh = 0;
 	err.n = 0;
 	err.m = 0;
@@ -340,8 +336,8 @@ t_img	text1;
 	map.x = 0;
 	map.y = 0;
 	map.spr = 0;
-	map.sizex = 64;
-	map.sizey = 64;
+	map.sizex = 32;
+	map.sizey = 32;
 	tex.c = NONE;
 	tex.f = NONE;
 	g.map = map;
@@ -351,8 +347,8 @@ t_img	text1;
 	pp.x = 0;
 	pp.y = 0;
 	pp.size = 2;
-	pd.x = 0;
-	pd.y = -1;
+	pd.x = 1;
+	pd.y = 0;
 	pd.a = 0;
 	g.pl = pp;
 	g.dir = pd;
@@ -384,17 +380,31 @@ t_img	text1;
 
 	close (fd);
 
+	/*
+	j = -1;
+	while (++j < g.map.y)
+	{
+		i = -1;
+		while (++i < g.map.x)
+			printf("%c", *(g.map.arr[j]+i));
+		printf("\n");
+	}*/
+	
+	
+	
+	
 	j = 0;
 	while (j < g.map.y)
 	{
 		i = 0;
 		while (i < g.map.x)
 		{
-			if (g.map.arr[j][i] == 'W')
+			if (*(g.map.arr[j] + i) == 'W')
 				{
 					g.pl.x = i * g.map.sizex + g.map.sizex / 2;
 					g.pl.y = j * g.map.sizey + g.map.sizey / 2;
-					g.dir.a = (g.dir.x * 0 + g.dir.y * -1) / (sqrt( pow(g.dir.x, 2) + pow(g.dir.y, 2)) * sqrt(pow(0, 2) + pow(1,2)));
+					g.dir.a = acos(g.dir.x) * (g.dir.y < 0 ? 1 : -1);
+					
 				}
 			i++;
 		}
