@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/02 19:33:57 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/03 21:47:09 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,8 @@ typedef struct	s_ray
 	double			x;
 	double			y;
 	int				i;
-	double			r;
-	double			l;
+	double			v;
+	double			w;
 	double			a;
 }				t_ray;
 
@@ -169,7 +169,7 @@ char			*ft_strjoin(char *s1, char *s2, int *err);
 char			*ft_strcpy(char *dest, char *src);
 char			*ft_strchr(const char *s, int c);
 char			*fill_line(char *root, char **line, int *err);
-void			ft_strclr(char *s);
+void			ft_strclr(char *g);
 int				trunc_line(char **line, char **residue, char **p_n, char **buf);
 
 int				ft_check_extension(char *arg, char *save);
@@ -181,8 +181,8 @@ int				ft_key(int key, void *arg);
 int				ft_close(t_all *g, int win);
 
 
-void			ft_draw(t_all *s);
-void			ft_screen(t_all *s);
+void			ft_draw(t_all *g);
+void			ft_screen(t_all *g);
 void			ft_map(t_all *g);
 void			ft_player(t_all *g);
 void			ft_ray(t_all *g);
@@ -191,6 +191,11 @@ void			ft_sideways(t_all *g, double c);
 void			ft_forward(t_all *g, double c);
 void			ft_turn(t_all *s, double c);
 void			ft_mlx_pixel_put(t_all *data, int x, int y, int color);
+
+void			ft_ver(t_all *g);
+void			ft_hor(t_all *g);
+int				ft_size(t_all *g);
+void			ft_column(t_all *g, int size);
 
 void    circle (t_all *g, int cx, int cy, int radius);
 void	plot_line (t_all *g, int x0, int y0, int x1, int y1);

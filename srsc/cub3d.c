@@ -6,11 +6,50 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/03 12:39:25 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/11 22:59:49 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+int				ft_size(t_all *g)
+{
+	double	correc;
+	double	fisheye;
+
+	fisheye = fabs((double)g->ray.i / (g->win.x / 2) - 1);
+	fisheye *= 28 * M_PI / 180;
+	correc = (double)g->hit.d * cos(fisheye);
+	return (round(g->win.y / correc));
+}
+
+void			ft_column(t_all *g, int size)
+{
+	unsigned int	color;
+	int				start;
+	int				count;
+
+	start = g->win.x * (g->win.y - size) / 2;
+	if (size > g->win.y)
+		count = (size - g->win.y) / 2;
+	else
+		count = 0;
+	color = RED;
+	while (g->ray.i < g->win.x * g->win.y)
+	{
+		if (g->ray.i >= start && count < size)
+		{
+			color = RED;
+			count++;
+		}
+		else if (count == size)
+			color = GREEN;
+		
+		g->img.adr[g->ray.i] = color;
+		g->ray.i += g->win.x;
+	}
+	g->ray.i -= g->win.x * g->win.y;
+}
 
 int	ft_resize(t_all *g, int win)
 {
@@ -27,19 +66,72 @@ void	ft_mlx_pixel_put(t_all *g, int x, int y, int color)
     *(int *)data = color;
 }
 
+void	ft_ver(t_all *g)
+{
+	double	x;
+	double	y;
+
+	x = floor(g->pl.x) + g->ray.v;
+	y = g->pl.y + (x - g->pl.x) * (g->ray.y / g->ray.x);
+	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y)
+	{
+		if (g->map.arr[(int)floor(y)][(int)(x - 1 + g->ray.v)] == '1')
+		{
+			g->hit.x = x;
+			g->hit.y = y;
+			g->hit.d = hypot(x - g->pl.x, y - g->pl.y);
+			return ;
+		}
+		x += (2 * g->ray.v - 1);
+		y += (2 * g->ray.v - 1) * g->ray.y / g->ray.x;
+	}
+	g->hit.x = g->pl.x;
+	g->hit.y = g->pl.y;
+	g->hit.d = 1000000000;
+}
+
+void	ft_hor(t_all *g)
+{
+	double	y;
+	double	x;
+
+	y = floor(g->pl.y) + g->ray.w;
+	x = g->pl.x + (y - g->pl.y) * (g->ray.x / g->ray.y);
+	while ((int)floor(x) > 0 && (int)floor(x) < g->map.x)
+	{
+		if (g->map.arr[(int)(y - 1 + g->ray.w)][(int)floor(x)] == '1')
+		{
+			if (g->hit.d > hypot(x - g->pl.x, y - g->pl.y))
+			{
+				g->hit.x = x;
+				g->hit.y = y;
+				g->hit.d = hypot(x - g->pl.x, y - g->pl.y);
+			}
+			return ;
+		}
+		y += (2 * g->ray.w - 1);
+		x += (2 * g->ray.w - 1) * g->ray.x / g->ray.y;
+	}
+}
+
 void	ft_ray(t_all *g)
 {
 	t_ray	ray;
 	double	ray_start, ray_end;
 	double	fov = M_PI / 3.;
 	t_pd	dir;
-	int     i = 0;
+	int     lx, i, x, y;
+	double	ang_size, height;
 
+	ang_size = tan(fov / 2.);
+	x = 1;
+	y = g->win.y / 2;
 	ray_start = g->dir.a - fov / 2.;
 	ray_end = g->dir.a + fov / 2;
 	
 	while (ray_start <= ray_end)
 	{
+		i = 0;
 		ray.x = g->pl.x;
 		ray.y = g->pl.y;
 
@@ -51,11 +143,26 @@ void	ft_ray(t_all *g)
 				
 			ray.x += dir.x;
 			ray.y += dir.y;
+			i ++;
 			
-			ft_mlx_pixel_put(g, ray.x, ray.y, BLUE);
-				
+			//ft_mlx_pixel_put(g, ray.x, ray.y, BLUE);
 		}
-		ray_start += fov / g->win.y;
+
+
+
+		
+
+		//height =  fabs(i / (2 * cos (g->dir.a) * ang_size));
+		height = (g->map.y * 32) / (i * (cos(g->dir.a)));
+
+
+		plot_line(g, x, y, x, (int)(y - height / 2));
+		plot_line(g, x, y, x, (int)(y + height / 2));
+		printf("steps: %d height: %.3f LINE [%d ; %d]\n", i, height, (int)(y - height / 2), (int)(y + height / 2));
+		x++;
+
+
+		ray_start += fov / g->win.x;
 	}
 	
 	
@@ -71,6 +178,14 @@ void	ft_dir(t_all *g)
 	ray.y = g->pl.y;
 	//g->dir.a = acos(g->dir.x) * (g->dir.y < 0 ? 1 : -1);
 	
+	if (g->ray.x >= 0)
+		g->ray.v = 1;
+	else
+		g->ray.v = 0;
+	if (g->ray.y >= 0)
+		g->ray.w = 1;
+	else
+		g->ray.w = 0;
 	
 	while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
 	{
@@ -164,10 +279,18 @@ void	ft_screen(t_all *g)
 	g->img.adr = mlx_get_data_addr(g->img.ptr, &g->img.bpp, &g->img.sl, &g->img.end);
 
 	
-	ft_player(g);
-	ft_ray(g);
-	ft_dir(g);
-	ft_map(g);
+		ft_map(g);
+		ft_player(g);
+		ft_dir(g);
+		ft_ray(g);
+		
+		//ft_ver(g);
+		//ft_hor(g);
+		
+		//ft_column(g, ft_size(g));
+	
+
+	
 }
 
 void	ft_draw(t_all *g)
@@ -175,21 +298,22 @@ void	ft_draw(t_all *g)
 	int		bpp;
 	int		sl;
 	int		end;
-
+	t_ray	ray;
 	
 	//mlx_do_sync(g->mlx.ptr);
 	
+	ray.x= 0;
+	ray.y = 0;
+	ray.i = 0;
+	ray.v = 0;
+	ray.w = 0;
+	
 	ft_screen(g);
-
 	mlx_do_sync(g->mlx.ptr);
 	mlx_put_image_to_window(g->mlx.ptr, g->win.ptr, g->img.ptr, 0, 0);
 
-
 	free(g->img.ptr);
 	free(g->img.adr);
-	
-	//ft_close(g, 1);
-
 }
 
 int		ft_close(t_all *g, int win)
@@ -355,8 +479,8 @@ t_img	text1;
 	ray.x = 0;
 	ray.y = -1;
 	ray.i = 0;
-	ray.r = 0;
-	ray.l = 0;
+	ray.v = 0;
+	ray.w = 0;
 	g.ray = ray;
 	g.dir = pd;
 	// reading from file to form map
