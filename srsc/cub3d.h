@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/03 21:47:09 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/14 18:07:04 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@
 # define LEFT 123
 # define RIGHT 124
 
-# define STEP 5
-# define TURN 0.04
+# define STEP 4
+# define TURN 0.05
 
 #define BUFFER_SIZE 1024
 

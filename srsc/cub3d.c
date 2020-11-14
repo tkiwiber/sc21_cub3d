@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/11 22:59:49 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/14 18:35:00 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,10 +120,11 @@ void	ft_ray(t_all *g)
 	double	ray_start, ray_end;
 	double	fov = M_PI / 3.;
 	t_pd	dir;
-	int     lx, i, x, y;
+	int     lx, i, x, y, n;
 	double	ang_size, height;
 
-	ang_size = tan(fov / 2.);
+	n = 0;
+	ang_size = tan(fov);
 	x = 1;
 	y = g->win.y / 2;
 	ray_start = g->dir.a - fov / 2.;
@@ -145,26 +146,25 @@ void	ft_ray(t_all *g)
 			ray.y += dir.y;
 			i ++;
 			
-			//ft_mlx_pixel_put(g, ray.x, ray.y, BLUE);
+			ft_mlx_pixel_put(g, ray.x, ray.y, BLUE);
 		}
 
-
-
-		
-
 		//height =  fabs(i / (2 * cos (g->dir.a) * ang_size));
-		height = (g->map.y * 32) / (i * (cos(g->dir.a)));
+		if (i * (cos(ray_start)) > 0)
+			height = (g->win.y * g->map.sizey) / (i * (cos(ray_start)));
 
+		printf("HEIGHT=%0.3f", height);
 
-		plot_line(g, x, y, x, (int)(y - height / 2));
-		plot_line(g, x, y, x, (int)(y + height / 2));
-		printf("steps: %d height: %.3f LINE [%d ; %d]\n", i, height, (int)(y - height / 2), (int)(y + height / 2));
+		plot_line(g, x, y, x, (int)(y - height / 3));
+		plot_line(g, x, y, x, (int)(y + height / 3));
+		printf("angle:%0.3f steps: %d height: %.3f LINE [%d ; %d]\n", ray_start * 180 / M_PI, i, height, (int)(y - height / 2), (int)(y + height / 2));
 		x++;
 
-
+		n++;
 		ray_start += fov / g->win.x;
 	}
 	
+	printf("%d COLUMNS WERE DRAWN\n", n);
 	
 }
 
@@ -212,26 +212,25 @@ void	ft_turn(t_all *g, double c)
 
 void	ft_sideways(t_all *g, double c)
 {
-	g->pl.x -= c * (STEP);
+	g->pl.x += c * STEP * g->dir.y;
 	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.x += c * STEP;
+		g->pl.x -= c * STEP * g->dir.y;
 
-	/*g->pl.x -= c * (g->dir.y * STEP / 100);
-	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x)] == '1')
-		g->pl.x += c * (g->dir.y * STEP / 100);
-	
-	g->pl.y += c * (g->dir.x * STEP / 100);
-	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x)] == '1')
-		g->pl.y -= c * (g->dir.x * STEP / 100);*/
+	g->pl.y += c * STEP * g->dir.x;
+	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
+		g->pl.y -= c * STEP * g->dir.x;
 	
 }
 
 void	ft_forward(t_all *g, double c)
 {
-	
-	g->pl.y -= c * (STEP);
+	g->pl.x += c * (STEP) * g->dir.x;
 	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.y += c * STEP;
+		g->pl.x -= c * (STEP) * g->dir.x;
+
+	g->pl.y -= c * (STEP) * g->dir.y;
+	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
+		g->pl.y += c * (STEP) * g->dir.y;
 }
 
 void	ft_player(t_all *g)
@@ -302,15 +301,19 @@ void	ft_draw(t_all *g)
 	
 	//mlx_do_sync(g->mlx.ptr);
 	
-	ray.x= 0;
+	ray.x = 0;
 	ray.y = 0;
 	ray.i = 0;
 	ray.v = 0;
 	ray.w = 0;
 	
+	printf("BEFORE player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
+
 	ft_screen(g);
 	mlx_do_sync(g->mlx.ptr);
 	mlx_put_image_to_window(g->mlx.ptr, g->win.ptr, g->img.ptr, 0, 0);
+
+	printf("AFTER player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
 
 	free(g->img.ptr);
 	free(g->img.adr);
@@ -336,9 +339,9 @@ int		ft_key(int key, void *arg)
 	if (key == ESC)
 		ft_close(arg, 1);
 	else if (key == A)
-		ft_sideways(arg, 1);
-	else if (key == D)
 		ft_sideways(arg, -1);
+	else if (key == D)
+		ft_sideways(arg, 1);
 	else if (key == W)
 		ft_forward(arg, 1);
 	else if (key == S)
