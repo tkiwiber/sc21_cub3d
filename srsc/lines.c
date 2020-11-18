@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/29 18:22:47 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/14 18:06:17 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/15 19:31:47 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	plot_line(t_all *g, int x0, int y0, int x1, int y1)
 	int dy = -abs (y1 - y0), sy = y0 < y1 ? 1 : -1; 
 	int err = dx + dy, e2; /* error value e_xy */
 	for (;;){  /* loop */
-		ft_mlx_pixel_put(g, x0, y0, CYAN);
+		ft_mlx_pixel_put(g, x0, y0, WHITE);
 		if (x0 == x1 && y0 == y1) break;
 			e2 = 2 * err;
 		if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */

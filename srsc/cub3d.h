@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/14 18:07:04 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/17 11:52:11 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@
 # define BLUE 0x000000FF
 # define MAGENTA 0x00FF00FF
 # define YELLOW 0x00FFFF00
+# define LIGHTGRAY 0x00D3D3D3
 # define CYAN 0x0000FFFF
+# define GRAY 0x00808080
+# define SLATEGRAY 0x00708090
 
 # define ESC 53
 # define W 13
@@ -42,7 +45,7 @@
 # define LEFT 123
 # define RIGHT 124
 
-# define STEP 4
+# define STEP 0.25
 # define TURN 0.05
 
 #define BUFFER_SIZE 1024
@@ -62,7 +65,7 @@ typedef struct	s_win
 typedef struct	s_img
 {
 	void			*ptr;
-	char			*adr;
+	unsigned int	*adr;
 	int				fsh;
 	int				bpp;
 	int				sl;
@@ -88,13 +91,13 @@ typedef struct	s_map
 
 typedef struct	s_tex
 {
-	unsigned int	*n;
-	unsigned int	*s;
-	unsigned int	*e;
-	unsigned int	*w;
+	unsigned int	*no;
+	unsigned int	*so;
+	unsigned int	*ea;
+	unsigned int	*we;
 	unsigned int	*i;
-	unsigned int	c;
-	unsigned int	f;
+	unsigned int	ceiling;
+	unsigned int	floor;
 }				t_tex;
 
 typedef struct	s_pp
@@ -170,7 +173,8 @@ char			*ft_strcpy(char *dest, char *src);
 char			*ft_strchr(const char *s, int c);
 char			*fill_line(char *root, char **line, int *err);
 void			ft_strclr(char *g);
-int				trunc_line(char **line, char **residue, char **p_n, char **buf);
+int				ft_trunc_line(char **line, char **residue, char **p_n, char **buf);
+int				ft_skipwhitespaces(char *line, int *pos);
 
 int				ft_check_extension(char *arg, char *save);
 int				ft_check_option(char *arg, char *ext);
@@ -196,6 +200,14 @@ void			ft_ver(t_all *g);
 void			ft_hor(t_all *g);
 int				ft_size(t_all *g);
 void			ft_column(t_all *g, int size);
+
+int				ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i);
+unsigned int	ft_take_pixel(t_all *g, double pos);
+
+int				ft_load_xpm(t_all *g, unsigned int **adr, char *file);
+int				ft_check_xpmfile(char *arg);
+
+
 
 void    circle (t_all *g, int cx, int cy, int radius);
 void	plot_line (t_all *g, int x0, int y0, int x1, int y1);

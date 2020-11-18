@@ -6,11 +6,77 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/14 18:35:00 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/17 11:53:28 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+int		ft_check_xpmfile(char *arg)
+{
+	int	i;
+
+	i = 0;
+	while (arg[i] != '\0')
+		i++;
+	if ((i > 4 && arg[i - 1] == 'm' && arg[i - 2] == 'p')
+		&& (arg[i - 3] == 'x' && arg[i - 4] == '.'))
+		return (1);
+	return (0);
+}
+
+int		ft_load_xpm(t_all *g, unsigned int **adr, char *file)
+{
+	int		fd;
+	void	*img;
+	int		tab[5];
+	int		size;
+	
+	size = 64;
+	if (ft_check_xpmfile(file) == 0)
+		return (-1);
+	if ((fd = open(file, O_RDONLY)) == -1)
+		return (-1);
+	close(fd);
+	img = mlx_xpm_file_to_image(g->mlx.ptr, file, &tab[0], &tab[1]);
+	if (img == NULL || tab[0] != size || tab[1] != size)
+		return (-1);
+	*adr = (unsigned int *)mlx_get_data_addr(img, &tab[3], &tab[3], &tab[4]);
+	free(img);
+	return (0);
+}
+
+int		ft_skip_whitespaces(char *line, int *pos)
+{
+	while ((line[*pos] == ' ' || line[*pos] == '\t' || line[*pos] == '\n')
+	|| (line[*pos] == '\r' || line[*pos] == '\v' || line[*pos] == '\f'))
+		(*pos)++;
+	return (1);
+}
+
+int		ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i)
+{
+	char	*file;
+	int		j;
+
+	if (*adr != NULL)
+		return (-7);
+	(*i) += 2;
+	ft_skip_whitespaces(line, i);
+	j = *i;
+	while (line[*i] != ' ' && line[*i] != '\0')
+		(*i)++;
+	if (!(file = malloc(sizeof(char) * (*i - j + 1))))
+		return (-8);
+	*i = j;
+	j = 0;
+	while (line[*i] != ' ' && line[*i] != '\0')
+		file[j++] = line[(*i)++];
+	file[j] = '\0';
+	j = ft_load_xpm(s, adr, file);
+	free(file);
+	return (j == -1 ? -9 : 0);
+}
 
 int				ft_size(t_all *g)
 {
@@ -23,44 +89,104 @@ int				ft_size(t_all *g)
 	return (round(g->win.y / correc));
 }
 
+void			ft_stock(t_all *g)
+{
+	g->stk[g->ray.i].x = g->ray.x;
+	g->stk[g->ray.i].y = g->ray.y;
+	g->stk[g->ray.i].d = g->hit.d;
+}
+
+unsigned int	ft_take_pixel(t_all *g, double pos)
+{
+	int	i;
+	int size;
+
+	size = 64;
+	if (floor(g->hit.y) == g->hit.y)
+	{
+		i = size * floor(size * pos) + size * (g->hit.x - floor(g->hit.x));
+		if (g->ray.w == 1)
+			return (g->tex.so[i]);
+		else if (g->ray.w == 0)
+			return (g->tex.no[i]);
+	}
+	else if (floor(g->hit.x) == g->hit.x)
+	{
+		i = size * floor(size * pos) + size * (g->hit.y - floor(g->hit.y));
+		if (g->ray.v == 1)
+			return (g->tex.ea[i]);
+		else if (g->ray.v == 0)
+			return (g->tex.we[i]);
+	}
+	return (BLACK);
+}
+
 void			ft_column(t_all *g, int size)
 {
 	unsigned int	color;
 	int				start;
 	int				count;
+	int				line_height;
+	int				draw_start;
+	int				draw_end;
+
+	if (size != 0)
+		line_height = (int)(g->win.y / size);
+	else
+		line_height = g->win.y;
+	
+	draw_start = (-size / 2 + g->win.y / 2) * 1;
+	if (draw_start < 0)
+		draw_start = 0;
+	draw_end = (size / 2 + g->win.y / 2) * 1;
+	if (draw_end >= g->win.y)
+		draw_end = g->win.y - 1;
+	
+	//plot_line(g, g->ray.i, draw_start, g->ray.i, draw_end);
+	//printf("****** ray.i=%d draw_s=%d draw_e=%d pos=%d max=%d\n", g->ray.i, draw_start, draw_end, (g->ray.i + g->win.x * draw_start), (g->win.x * g->win.y));
+	//printf("%s %s\n", g->img.adr[g->ray.i * g->win.x], g->img.adr[1]);
+	
+	/*while (draw_start < draw_end && g->ray.i < g->win.x)
+	{
+		if (g->ray.v && g->ray.w)
+			color = RED;
+		else if (g->ray.v && !g->ray.w)
+			color = GREEN;
+		else if (!g->ray.v && !g->ray.w)
+			color = YELLOW;
+		else if (!g->ray.v && g->ray.w)
+			color = BLUE;
+		g->img.adr[g->win.x * draw_start + g->ray.i ] = mlx_get_color_value(g->mlx.ptr, color);
+		draw_start++;
+	}*/
+	
+	//printf("******** x=%d hit.d = %0.2f size = %d line_height = %d y0y1=[%d,%d]\n", g->ray.i , g->hit.d, size, line_height, draw_start, draw_end);
 
 	start = g->win.x * (g->win.y - size) / 2;
 	if (size > g->win.y)
 		count = (size - g->win.y) / 2;
 	else
 		count = 0;
-	color = RED;
+	color = SLATEGRAY;
 	while (g->ray.i < g->win.x * g->win.y)
 	{
 		if (g->ray.i >= start && count < size)
-		{
-			color = RED;
+		{			
+			color = ft_take_pixel(g, (double)count / size);
 			count++;
 		}
 		else if (count == size)
-			color = GREEN;
-		
-		g->img.adr[g->ray.i] = color;
+			color = SLATEGRAY;
+		g->img.adr[g->ray.i] = mlx_get_color_value(g->mlx.ptr, color);
 		g->ray.i += g->win.x;
 	}
 	g->ray.i -= g->win.x * g->win.y;
-}
-
-int	ft_resize(t_all *g, int win)
-{
-
-	//printf("RE-seized\n");
-	return(1);
+	
 }
 
 void	ft_mlx_pixel_put(t_all *g, int x, int y, int color)
 {
-	char	*data;
+	unsigned int	*data;
 
 	data = g->img.adr + (x * (g->img.bpp / 8) + y * g->img.sl);
     *(int *)data = color;
@@ -73,7 +199,7 @@ void	ft_ver(t_all *g)
 
 	x = floor(g->pl.x) + g->ray.v;
 	y = g->pl.y + (x - g->pl.x) * (g->ray.y / g->ray.x);
-	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y)
+	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y )
 	{
 		if (g->map.arr[(int)floor(y)][(int)(x - 1 + g->ray.v)] == '1')
 		{
@@ -87,7 +213,7 @@ void	ft_ver(t_all *g)
 	}
 	g->hit.x = g->pl.x;
 	g->hit.y = g->pl.y;
-	g->hit.d = 1000000000;
+	g->hit.d = 99999999;
 }
 
 void	ft_hor(t_all *g)
@@ -107,6 +233,7 @@ void	ft_hor(t_all *g)
 				g->hit.y = y;
 				g->hit.d = hypot(x - g->pl.x, y - g->pl.y);
 			}
+			//printf("******** hit hor = [%0.3f ; %0.3f] dist = %0.3f\n", g->hit.x, g->hit.y, g->hit.d);
 			return ;
 		}
 		y += (2 * g->ray.w - 1);
@@ -116,7 +243,20 @@ void	ft_hor(t_all *g)
 
 void	ft_ray(t_all *g)
 {
-	t_ray	ray;
+	double	ang;
+	double	dis;
+
+	ang = ((double)g->ray.i - (g->win.x / 2)) * 33 / (g->win.x / 2);
+	ang = ang * M_PI / 180;
+	g->ray.x = g->dir.x * cos(ang) - g->dir.y * sin(ang);
+	g->ray.y = g->dir.y * cos(ang) + g->dir.x * sin(ang);
+	dis = hypot(g->ray.x, g->ray.y);
+	g->ray.x /= dis;
+	g->ray.y /= dis;
+	
+	//printf("******** RAY = [%0.3f ; %0.3f]\n", g->ray.x, g->ray.y);
+
+	/*t_ray	ray;
 	double	ray_start, ray_end;
 	double	fov = M_PI / 3.;
 	t_pd	dir;
@@ -164,20 +304,12 @@ void	ft_ray(t_all *g)
 		ray_start += fov / g->win.x;
 	}
 	
-	printf("%d COLUMNS WERE DRAWN\n", n);
+	printf("%d COLUMNS WERE DRAWN\n", n);*/
 	
 }
 
 void	ft_dir(t_all *g)
-{
-	t_ray	ray;
-	int c = 1;
-	t_ray dir;
-
-	ray.x = g->pl.x;
-	ray.y = g->pl.y;
-	//g->dir.a = acos(g->dir.x) * (g->dir.y < 0 ? 1 : -1);
-	
+{	
 	if (g->ray.x >= 0)
 		g->ray.v = 1;
 	else
@@ -187,12 +319,12 @@ void	ft_dir(t_all *g)
 	else
 		g->ray.w = 0;
 	
-	while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
+	/*while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
 	{
 		ray.x += cos(g->dir.a);
 		ray.y += sin(g->dir.a);
 		ft_mlx_pixel_put(g, ray.x, ray.y, GREEN);
-	}
+	}*/
 	
 }
 
@@ -204,33 +336,28 @@ void	ft_turn(t_all *g, double c)
 	g->dir.y =  g->dir.x * sin(c * TURN) + g->dir.y * cos(c * TURN);
 	dist = hypot(g->dir.x, g->dir.y);
 	g->dir.x /= dist;
-	g->dir.y /= dist;
-	
+	g->dir.y /= dist;	
 	g->dir.a = acos(g->dir.x) * (g->dir.y < 0 ? 1 : -1);
-	printf("Player.a = %.3f\n", g->dir.a * 180 / M_PI);
 }
 
 void	ft_sideways(t_all *g, double c)
 {
-	g->pl.x += c * STEP * g->dir.y;
-	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.x -= c * STEP * g->dir.y;
-
-	g->pl.y += c * STEP * g->dir.x;
-	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.y -= c * STEP * g->dir.x;
-	
+	g->pl.x -= c * g->dir.y * (STEP);
+	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x)] == '1')
+		g->pl.x += c * g->dir.y * (STEP);
+	g->pl.y += c * g->dir.x * (STEP);
+	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x)] == '1')
+		g->pl.y -= c * g->dir.x * (STEP);
 }
 
 void	ft_forward(t_all *g, double c)
 {
-	g->pl.x += c * (STEP) * g->dir.x;
-	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.x -= c * (STEP) * g->dir.x;
-
-	g->pl.y -= c * (STEP) * g->dir.y;
-	if (g->map.arr[(int)floor(g->pl.y / g->map.sizey)][(int)floor(g->pl.x / g->map.sizex)] == '1')
-		g->pl.y += c * (STEP) * g->dir.y;
+	g->pl.x += c * g->dir.x * (STEP);
+	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x )] == '1')
+		g->pl.x -= c * g->dir.x * (STEP);
+	g->pl.y += c * g->dir.y * (STEP);
+	if (g->map.arr[(int)floor(g->pl.y)][(int)floor(g->pl.x)] == '1')
+		g->pl.y -= c * g->dir.y * (STEP);
 }
 
 void	ft_player(t_all *g)
@@ -242,15 +369,15 @@ void	ft_player(t_all *g)
 
 void	ft_map(t_all *g)
 {
-	int osx = g->map.sizex;
-	int osy = g->map.sizey;
+	int osx = 1; //g->map.sizex;
+	int osy = 1; //g->map.sizey;
 	int i, j;
 
 int bpp, end, sl, img_width, img_height;
 t_img	text1;
 
 	text1.ptr = mlx_xpm_file_to_image(g->mlx.ptr, "brick.xpm", &img_width, &img_height);
-	text1.adr = mlx_get_data_addr(text1.ptr, &bpp, &sl, &end);
+	text1.adr = (unsigned int *)mlx_get_data_addr(text1.ptr, &bpp, &sl, &end);
 
 	j = 0;
 	while (j < g->map.y)
@@ -275,20 +402,33 @@ void	ft_screen(t_all *g)
 	int i;
 	
 	g->img.ptr = mlx_new_image(g->mlx.ptr, g->win.x, g->win.y);
-	g->img.adr = mlx_get_data_addr(g->img.ptr, &g->img.bpp, &g->img.sl, &g->img.end);
+	g->img.adr = (unsigned int *)mlx_get_data_addr(g->img.ptr, &g->img.bpp, &g->img.sl, &g->img.end);
+	g->stk = malloc(sizeof(t_stk) * g->win.x);
 
-	
-		ft_map(g);
-		ft_player(g);
-		ft_dir(g);
+	while (g->ray.i < g->win.x)
+	{
 		ft_ray(g);
+		ft_dir(g);
+		ft_ver(g);
+		ft_hor(g);
+		ft_stock(g);
+		ft_column(g, ft_size(g));
+
+		//ft_map(g);
+		//ft_player(g);
+		//ft_dir(g);
+		g->ray.i++;
+	}
+		
+		
+		//ft_ray(g);
 		
 		//ft_ver(g);
 		//ft_hor(g);
 		
 		//ft_column(g, ft_size(g));
-	
-
+		//ft_map(g);
+		
 	
 }
 
@@ -298,7 +438,9 @@ void	ft_draw(t_all *g)
 	int		sl;
 	int		end;
 	t_ray	ray;
-	
+	t_hit	hit;
+	int i;
+
 	//mlx_do_sync(g->mlx.ptr);
 	
 	ray.x = 0;
@@ -306,14 +448,28 @@ void	ft_draw(t_all *g)
 	ray.i = 0;
 	ray.v = 0;
 	ray.w = 0;
+	hit.x = 0;
+	hit.y = 0;
+	hit.d = 0;
+	g->ray = ray;
+	g->hit = hit;
 	
-	printf("BEFORE player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
+	i = 0;
+	ft_get_textures(g, &g->tex.so, "SO ./textures/bluestone.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.we, "WE ./textures/greystone.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.ea, "EA ./textures/mossy.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.no, "NO ./textures/purplestone.xpm", &i);
+
+	//printf("BEFORE player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
 
 	ft_screen(g);
 	mlx_do_sync(g->mlx.ptr);
 	mlx_put_image_to_window(g->mlx.ptr, g->win.ptr, g->img.ptr, 0, 0);
 
-	printf("AFTER player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
+	//printf("AFTER player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
 
 	free(g->img.ptr);
 	free(g->img.adr);
@@ -347,9 +503,9 @@ int		ft_key(int key, void *arg)
 	else if (key == S)
 		ft_forward(arg, -1);
 	else if (key == LEFT)
-		ft_turn(arg, 1);
-	else if (key == RIGHT)
 		ft_turn(arg, -1);
+	else if (key == RIGHT)
+		ft_turn(arg, 1);
 	ft_draw(arg);
 	return (1);
 }
@@ -453,10 +609,10 @@ t_img	text1;
 	g.err = err;
 
 	map.arr = NULL;
-	tex.n = NULL;
-	tex.s = NULL;
-	tex.e = NULL;
-	tex.w = NULL;
+	tex.no = NULL;
+	tex.so = NULL;
+	tex.ea = NULL;
+	tex.we = NULL;
 	tex.i = NULL;
 	spr = NULL;
 	stk = NULL;
@@ -465,8 +621,8 @@ t_img	text1;
 	map.spr = 0;
 	map.sizex = 32;
 	map.sizey = 32;
-	tex.c = NONE;
-	tex.f = NONE;
+	tex.ceiling = NONE;
+	tex.floor = NONE;
 	g.map = map;
 	g.tex = tex;
 	g.spr = spr;
@@ -506,6 +662,8 @@ t_img	text1;
 	}
 
 	close (fd);
+	
+
 
 	/*
 	j = -1;
@@ -528,10 +686,9 @@ t_img	text1;
 		{
 			if (*(g.map.arr[j] + i) == 'W')
 				{
-					g.pl.x = i * g.map.sizex + g.map.sizex / 2;
-					g.pl.y = j * g.map.sizey + g.map.sizey / 2;
+					g.pl.x = i;
+					g.pl.y = j;
 					g.dir.a = acos(g.dir.x) * (g.dir.y < 0 ? 1 : -1);
-					
 				}
 			i++;
 		}
@@ -553,7 +710,7 @@ t_img	text1;
 	//ft_draw(&g);
 	mlx_hook(g.win.ptr, 2, 1L<<8, ft_key, &g);
 	mlx_hook(g.win.ptr, 17, 0, ft_close, &g);
-	mlx_hook(g.win.ptr, 10, 0, ft_resize, &g);
+	//mlx_hook(g.win.ptr, 10, 0, ft_resize, &g);
 
 	mlx_loop(g.mlx.ptr);
 	
