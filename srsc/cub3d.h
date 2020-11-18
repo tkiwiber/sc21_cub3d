@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/17 11:52:11 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 20:38:07 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 # define RIGHT 124
 
 # define STEP 0.25
-# define TURN 0.05
+# define TURN 0.15
 
 #define BUFFER_SIZE 1024
 
@@ -138,6 +138,16 @@ typedef struct	s_spr
 	double			d;
 }				t_spr;
 
+typedef struct	s_key
+{
+	int			step_left;
+	int			step_right;
+	int			step_forward;
+	int			step_back;
+	int			turn_left;
+	int			turn_right;
+}				t_key;
+
 typedef struct	s_stk
 {
 	double			x;
@@ -159,6 +169,7 @@ typedef struct	s_all
 	t_hit			hit;
 	t_spr			*spr;
 	t_stk			*stk;
+	t_key			key;
 }				t_all;
 
 
@@ -181,7 +192,9 @@ int				ft_check_option(char *arg, char *ext);
 
 int				ft_fill_map(t_all *g, char *line);
 
-int				ft_key(int key, void *arg);
+//int				ft_key(int key, void *arg); stable version
+int				ft_key_up(int key, t_all *g);
+int				ft_key_down(int key, t_all *g);
 int				ft_close(t_all *g, int win);
 
 

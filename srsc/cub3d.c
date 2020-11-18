@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/17 11:53:28 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 20:37:03 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -490,6 +490,7 @@ int		ft_close(t_all *g, int win)
 	return (1);
 }
 
+/* working version
 int		ft_key(int key, void *arg)
 {
 	if (key == ESC)
@@ -507,6 +508,111 @@ int		ft_key(int key, void *arg)
 	else if (key == RIGHT)
 		ft_turn(arg, 1);
 	ft_draw(arg);
+	return (1);
+}
+*/
+
+int		ft_init_keystates(t_key *key)
+{
+	key->step_left = 0;
+	key->step_right = 0;
+	key->step_forward = 0;
+	key->step_back = 0;
+	key->turn_left = 0;
+	key->turn_right = 0;
+	return (1);
+}
+
+int		ft_update_movement(t_all *g)
+{
+	printf("*** Forward button state: %d\n", g->key.step_forward);
+	if (g->key.step_forward)
+		ft_forward(g, 1);
+	if (g->key.step_back)
+		ft_forward(g, -1);
+	if (g->key.step_left)
+		ft_sideways(g, -1);
+	if (g->key.step_right)
+		ft_sideways(g, 1);
+	if (g->key.turn_right)
+		ft_turn(g, -1);
+	if (g->key.turn_left)
+		ft_turn(g, 1);
+	ft_draw(g);
+	return (1);
+}
+
+int		ft_key_down(int key, t_all *g)
+{	
+	if (key == ESC)
+		ft_close(g, 1);
+	else if (key == A)
+	{
+		g->key.step_left = 1;
+		ft_update_movement(g);
+	}
+	else if (key == D)
+	{
+		g->key.step_right = 1;
+		ft_update_movement(g);
+	}
+	else if (key == W)
+	{
+		g->key.step_forward = 1;
+		ft_update_movement(g);
+	}
+	else if (key == S)
+	{
+		g->key.step_back = 1;
+		ft_update_movement(g);
+	}
+	else if (key == LEFT)
+	{
+		g->key.turn_right = 1;
+		ft_update_movement(g);
+	}
+	else if (key == RIGHT)
+	{
+		g->key.turn_left = 1;
+		ft_update_movement(g);
+	}
+	return (1);
+}
+
+int		ft_key_up(int key, t_all *g)
+{	
+	if (key == ESC)
+		ft_close(g, 1);
+	else if (key == A)
+	{
+		g->key.step_left = 0;
+		ft_update_movement(g);
+	}
+	else if (key == D)
+	{
+		g->key.step_right = 0;
+		ft_update_movement(g);
+	}
+	else if (key == W)
+	{
+		g->key.step_forward = 0;
+		ft_update_movement(g);
+	}
+	else if (key == S)
+	{
+		g->key.step_back = 0;
+		ft_update_movement(g);
+	}
+	else if (key == LEFT)
+	{
+		g->key.turn_right = 0;
+		ft_update_movement(g);
+	}
+	else if (key == RIGHT)
+	{
+		g->key.turn_left = 0;
+		ft_update_movement(g);
+	}
 	return (1);
 }
 
@@ -579,6 +685,7 @@ int		ft_start(char *f_name, int c)
 	t_pd	pd;
 	t_ray	ray;
 	t_hit	hit;
+	t_key	key;
 
 int bpp, end, sl, img_width, img_height;
 t_img	text1;
@@ -642,6 +749,11 @@ t_img	text1;
 	ray.w = 0;
 	g.ray = ray;
 	g.dir = pd;
+
+	ft_init_keystates(&key);
+	g.key = key;
+
+
 	// reading from file to form map
 
 	n = 0;
@@ -697,9 +809,15 @@ t_img	text1;
 
 	// Drawing main window using mlx
 	g.mlx.ptr = mlx_init();
-	g.win.ptr = mlx_new_window(g.mlx.ptr, g.win.x, g.win.y, "CUB3D tkiwiber");
 
-	mlx_string_put(g.mlx.ptr, g.win.ptr, 10, 10, WHITE, "Press anykey to start! (ESC for exit)");
+	ft_turn(&g, 1);
+	ft_forward(&g, 1);
+	ft_turn(&g, -1);
+	ft_forward(&g, -1);
+
+	g.win.ptr = mlx_new_window(g.mlx.ptr, g.win.x, g.win.y, "CUB3D tkiwiber");
+	ft_draw(&g);
+	//mlx_string_put(g.mlx.ptr, g.win.ptr, 10, 10, WHITE, "Press anykey to start! (ESC for exit)");
 
 /* texture 
 	text1.ptr = mlx_xpm_file_to_image(g.mlx.ptr, "brick.xpm", &img_width, &img_height);
@@ -707,11 +825,11 @@ t_img	text1;
 
 	mlx_put_image_to_window(g.mlx.ptr, g.win.ptr, text1.ptr, 0, 0);
 */
-	//ft_draw(&g);
-	mlx_hook(g.win.ptr, 2, 1L<<8, ft_key, &g);
+	mlx_hook(g.win.ptr, 2, 0, ft_key_down, &g);
+	mlx_hook(g.win.ptr, 3, 0, ft_key_up, &g);
 	mlx_hook(g.win.ptr, 17, 0, ft_close, &g);
-	//mlx_hook(g.win.ptr, 10, 0, ft_resize, &g);
 
+	
 	mlx_loop(g.mlx.ptr);
 	
 	return (c); // dont forget to correct
