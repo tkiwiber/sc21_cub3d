@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 20:38:07 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 21:40:54 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@
 # define LEFT 123
 # define RIGHT 124
 
-# define STEP 0.25
-# define TURN 0.15
+# define STEP 0.1
+# define TURN 0.05
 
 #define BUFFER_SIZE 1024
 
@@ -196,7 +196,7 @@ int				ft_fill_map(t_all *g, char *line);
 int				ft_key_up(int key, t_all *g);
 int				ft_key_down(int key, t_all *g);
 int				ft_close(t_all *g, int win);
-
+int				ft_loop(t_all *g);
 
 void			ft_draw(t_all *g);
 void			ft_screen(t_all *g);
@@ -222,10 +222,10 @@ int				ft_check_xpmfile(char *arg);
 
 
 
-void    circle (t_all *g, int cx, int cy, int radius);
-void	plot_line (t_all *g, int x0, int y0, int x1, int y1);
-void	plot8points (t_all *g, int cx, int cy, int x, int y);
-void	plot4points (t_all *g, int cx, int cy, int x, int y);
+void    circle(t_all *g, int cx, int cy, int radius);
+void	plot_line(t_all *g, int x0, int y0, int x1, int y1);
+void	plot8points(t_all *g, int cx, int cy, int x, int y);
+void	plot4points(t_all *g, int cx, int cy, int x, int y);
 void	plot_rect(t_all *g, int x0, int y0, int x1, int y1);
 void	plot_rect_r(t_all *g, int x0, int y0, int x1, int y1);
 void	raster_circle (t_all *g, int x0, int y0, int radius);

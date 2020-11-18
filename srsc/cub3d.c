@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 20:37:03 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 21:48:41 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -490,28 +490,6 @@ int		ft_close(t_all *g, int win)
 	return (1);
 }
 
-/* working version
-int		ft_key(int key, void *arg)
-{
-	if (key == ESC)
-		ft_close(arg, 1);
-	else if (key == A)
-		ft_sideways(arg, -1);
-	else if (key == D)
-		ft_sideways(arg, 1);
-	else if (key == W)
-		ft_forward(arg, 1);
-	else if (key == S)
-		ft_forward(arg, -1);
-	else if (key == LEFT)
-		ft_turn(arg, -1);
-	else if (key == RIGHT)
-		ft_turn(arg, 1);
-	ft_draw(arg);
-	return (1);
-}
-*/
-
 int		ft_init_keystates(t_key *key)
 {
 	key->step_left = 0;
@@ -523,9 +501,16 @@ int		ft_init_keystates(t_key *key)
 	return (1);
 }
 
+int		ft_loop(t_all *g)
+{
+	ft_update_movement(g);
+	ft_draw(g);
+	return (1);
+}
+
 int		ft_update_movement(t_all *g)
 {
-	printf("*** Forward button state: %d\n", g->key.step_forward);
+	//printf("*** Forward button state: %d\n", g->key.step_forward);
 	if (g->key.step_forward)
 		ft_forward(g, 1);
 	if (g->key.step_back)
@@ -538,44 +523,26 @@ int		ft_update_movement(t_all *g)
 		ft_turn(g, -1);
 	if (g->key.turn_left)
 		ft_turn(g, 1);
-	ft_draw(g);
 	return (1);
 }
 
 int		ft_key_down(int key, t_all *g)
 {	
+	static int n = 0;
 	if (key == ESC)
 		ft_close(g, 1);
 	else if (key == A)
-	{
 		g->key.step_left = 1;
-		ft_update_movement(g);
-	}
 	else if (key == D)
-	{
 		g->key.step_right = 1;
-		ft_update_movement(g);
-	}
 	else if (key == W)
-	{
 		g->key.step_forward = 1;
-		ft_update_movement(g);
-	}
 	else if (key == S)
-	{
 		g->key.step_back = 1;
-		ft_update_movement(g);
-	}
 	else if (key == LEFT)
-	{
 		g->key.turn_right = 1;
-		ft_update_movement(g);
-	}
 	else if (key == RIGHT)
-	{
 		g->key.turn_left = 1;
-		ft_update_movement(g);
-	}
 	return (1);
 }
 
@@ -584,35 +551,17 @@ int		ft_key_up(int key, t_all *g)
 	if (key == ESC)
 		ft_close(g, 1);
 	else if (key == A)
-	{
 		g->key.step_left = 0;
-		ft_update_movement(g);
-	}
 	else if (key == D)
-	{
 		g->key.step_right = 0;
-		ft_update_movement(g);
-	}
 	else if (key == W)
-	{
 		g->key.step_forward = 0;
-		ft_update_movement(g);
-	}
 	else if (key == S)
-	{
 		g->key.step_back = 0;
-		ft_update_movement(g);
-	}
 	else if (key == LEFT)
-	{
 		g->key.turn_right = 0;
-		ft_update_movement(g);
-	}
 	else if (key == RIGHT)
-	{
 		g->key.turn_left = 0;
-		ft_update_movement(g);
-	}
 	return (1);
 }
 
@@ -825,10 +774,10 @@ t_img	text1;
 
 	mlx_put_image_to_window(g.mlx.ptr, g.win.ptr, text1.ptr, 0, 0);
 */
+	mlx_loop_hook(g.mlx.ptr, ft_loop, &g);
 	mlx_hook(g.win.ptr, 2, 0, ft_key_down, &g);
 	mlx_hook(g.win.ptr, 3, 0, ft_key_up, &g);
 	mlx_hook(g.win.ptr, 17, 0, ft_close, &g);
-
 	
 	mlx_loop(g.mlx.ptr);
 	
