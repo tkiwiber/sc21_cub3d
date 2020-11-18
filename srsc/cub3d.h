@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 21:40:54 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 22:37:51 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,23 +192,27 @@ int				ft_check_option(char *arg, char *ext);
 
 int				ft_fill_map(t_all *g, char *line);
 
-//int				ft_key(int key, void *arg); stable version
+int				ft_init_keystates(t_key *key);
 int				ft_key_up(int key, t_all *g);
 int				ft_key_down(int key, t_all *g);
-int				ft_close(t_all *g, int win);
 int				ft_loop(t_all *g);
+int				ft_update_movement(t_all *g);
+
+int				ft_close(t_all *g, int win);
 
 void			ft_draw(t_all *g);
 void			ft_screen(t_all *g);
-void			ft_map(t_all *g);
+
+void			ft_minimap(t_all *g);
 void			ft_player(t_all *g);
-void			ft_ray(t_all *g);
+
 
 void			ft_sideways(t_all *g, double c);
 void			ft_forward(t_all *g, double c);
 void			ft_turn(t_all *s, double c);
 void			ft_mlx_pixel_put(t_all *data, int x, int y, int color);
 
+void			ft_ray(t_all *g);
 void			ft_ver(t_all *g);
 void			ft_hor(t_all *g);
 int				ft_size(t_all *g);
@@ -222,13 +226,13 @@ int				ft_check_xpmfile(char *arg);
 
 
 
-void    circle(t_all *g, int cx, int cy, int radius);
-void	plot_line(t_all *g, int x0, int y0, int x1, int y1);
-void	plot8points(t_all *g, int cx, int cy, int x, int y);
-void	plot4points(t_all *g, int cx, int cy, int x, int y);
-void	plot_rect(t_all *g, int x0, int y0, int x1, int y1);
-void	plot_rect_r(t_all *g, int x0, int y0, int x1, int y1);
-void	raster_circle (t_all *g, int x0, int y0, int radius);
+void    		circle(t_all *g, int cx, int cy, int radius);
+void			plot_line(t_all *g, double x0, double y0, double x1, double y1, int color);
+void			plot8points(t_all *g, int cx, int cy, int x, int y);
+void			plot4points(t_all *g, int cx, int cy, int x, int y);
+void			plot_rect(t_all *g, int x0, int y0, int x1, int y1, int color);
+void			plot_rect_r(t_all *g, int x0, int y0, int x1, int y1, int color);
+void			raster_circle (t_all *g, int x0, int y0, int radius, int color);
 
 
 

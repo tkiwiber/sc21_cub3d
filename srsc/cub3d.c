@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 21:48:41 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 22:38:37 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,59 +253,6 @@ void	ft_ray(t_all *g)
 	dis = hypot(g->ray.x, g->ray.y);
 	g->ray.x /= dis;
 	g->ray.y /= dis;
-	
-	//printf("******** RAY = [%0.3f ; %0.3f]\n", g->ray.x, g->ray.y);
-
-	/*t_ray	ray;
-	double	ray_start, ray_end;
-	double	fov = M_PI / 3.;
-	t_pd	dir;
-	int     lx, i, x, y, n;
-	double	ang_size, height;
-
-	n = 0;
-	ang_size = tan(fov);
-	x = 1;
-	y = g->win.y / 2;
-	ray_start = g->dir.a - fov / 2.;
-	ray_end = g->dir.a + fov / 2;
-	
-	while (ray_start <= ray_end)
-	{
-		i = 0;
-		ray.x = g->pl.x;
-		ray.y = g->pl.y;
-
-		dir.x = cos(ray_start);
-		dir.y = sin(ray_start);
-
-		while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
-		{
-				
-			ray.x += dir.x;
-			ray.y += dir.y;
-			i ++;
-			
-			ft_mlx_pixel_put(g, ray.x, ray.y, BLUE);
-		}
-
-		//height =  fabs(i / (2 * cos (g->dir.a) * ang_size));
-		if (i * (cos(ray_start)) > 0)
-			height = (g->win.y * g->map.sizey) / (i * (cos(ray_start)));
-
-		printf("HEIGHT=%0.3f", height);
-
-		plot_line(g, x, y, x, (int)(y - height / 3));
-		plot_line(g, x, y, x, (int)(y + height / 3));
-		printf("angle:%0.3f steps: %d height: %.3f LINE [%d ; %d]\n", ray_start * 180 / M_PI, i, height, (int)(y - height / 2), (int)(y + height / 2));
-		x++;
-
-		n++;
-		ray_start += fov / g->win.x;
-	}
-	
-	printf("%d COLUMNS WERE DRAWN\n", n);*/
-	
 }
 
 void	ft_dir(t_all *g)
@@ -318,14 +265,6 @@ void	ft_dir(t_all *g)
 		g->ray.w = 1;
 	else
 		g->ray.w = 0;
-	
-	/*while (g->map.arr[(int)(ray.y / g->map.sizey)][(int)(ray.x / g->map.sizex)] != '1')
-	{
-		ray.x += cos(g->dir.a);
-		ray.y += sin(g->dir.a);
-		ft_mlx_pixel_put(g, ray.x, ray.y, GREEN);
-	}*/
-	
 }
 
 void	ft_turn(t_all *g, double c)
@@ -360,25 +299,14 @@ void	ft_forward(t_all *g, double c)
 		g->pl.y -= c * g->dir.y * (STEP);
 }
 
-void	ft_player(t_all *g)
+void	ft_minimap(t_all *g)
 {
-	raster_circle(g, g->pl.x, g->pl.y, g->pl.size);
-	raster_circle(g, g->pl.x, g->pl.y, g->pl.size + 1);
-	
-}
-
-void	ft_map(t_all *g)
-{
-	int osx = 1; //g->map.sizex;
-	int osy = 1; //g->map.sizey;
+	int osx;
+	int osy;
 	int i, j;
 
-int bpp, end, sl, img_width, img_height;
-t_img	text1;
-
-	text1.ptr = mlx_xpm_file_to_image(g->mlx.ptr, "brick.xpm", &img_width, &img_height);
-	text1.adr = (unsigned int *)mlx_get_data_addr(text1.ptr, &bpp, &sl, &end);
-
+	osx = g->map.sizex;
+	osy = g->map.sizey;
 	j = 0;
 	while (j < g->map.y)
 	{
@@ -386,15 +314,13 @@ t_img	text1;
 		while (i < g->map.x)
 		{
 			if ((g->map.arr[j][i]) == '1')
-				//mlx_put_image_to_window(g->mlx.ptr, g->win.ptr, text1.ptr, i * osx, j * osy);
-			plot_rect(g, i * osx, j * osy, i * osx + osx, j * osy + osy);
+				plot_rect_r(g, osx + i * osx, osy + j * osy, i * osx + 2 * osx, j * osy + 2 * osy, WHITE);
 			i++;
 		}
 		j ++;
 	}
-
-	//mlx_put_image_to_window(g->mlx.ptr, g->win.ptr, text1.ptr, 0, 0);
-
+	plot_rect(g, osx, osx, (g->map.x - 1) * osx + 2 * osx, (g->map.y - 1) * osy + 2 * osy, RED);
+	raster_circle(g, g->pl.x * osx + osx, g->pl.y * osy + osy, g->pl.size, BLACK);
 }
 
 void	ft_screen(t_all *g)
@@ -413,23 +339,9 @@ void	ft_screen(t_all *g)
 		ft_hor(g);
 		ft_stock(g);
 		ft_column(g, ft_size(g));
-
-		//ft_map(g);
-		//ft_player(g);
-		//ft_dir(g);
+		ft_minimap(g);
 		g->ray.i++;
 	}
-		
-		
-		//ft_ray(g);
-		
-		//ft_ver(g);
-		//ft_hor(g);
-		
-		//ft_column(g, ft_size(g));
-		//ft_map(g);
-		
-	
 }
 
 void	ft_draw(t_all *g)
@@ -675,8 +587,8 @@ t_img	text1;
 	map.x = 0;
 	map.y = 0;
 	map.spr = 0;
-	map.sizex = 32;
-	map.sizey = 32;
+	map.sizex = 2;
+	map.sizey = 2;
 	tex.ceiling = NONE;
 	tex.floor = NONE;
 	g.map = map;
@@ -685,7 +597,7 @@ t_img	text1;
 	g.stk = stk;
 	pp.x = 0;
 	pp.y = 0;
-	pp.size = 2;
+	pp.size = 1;
 	pd.x = 1;
 	pd.y = 0;
 	pd.a = 0;
@@ -724,21 +636,6 @@ t_img	text1;
 
 	close (fd);
 	
-
-
-	/*
-	j = -1;
-	while (++j < g.map.y)
-	{
-		i = -1;
-		while (++i < g.map.x)
-			printf("%c", *(g.map.arr[j]+i));
-		printf("\n");
-	}*/
-	
-	
-	
-	
 	j = 0;
 	while (j < g.map.y)
 	{
@@ -765,15 +662,7 @@ t_img	text1;
 	ft_forward(&g, -1);
 
 	g.win.ptr = mlx_new_window(g.mlx.ptr, g.win.x, g.win.y, "CUB3D tkiwiber");
-	ft_draw(&g);
-	//mlx_string_put(g.mlx.ptr, g.win.ptr, 10, 10, WHITE, "Press anykey to start! (ESC for exit)");
-
-/* texture 
-	text1.ptr = mlx_xpm_file_to_image(g.mlx.ptr, "brick.xpm", &img_width, &img_height);
-	text1.adr = mlx_get_data_addr(text1.ptr, &bpp, &sl, &end);
-
-	mlx_put_image_to_window(g.mlx.ptr, g.win.ptr, text1.ptr, 0, 0);
-*/
+	
 	mlx_loop_hook(g.mlx.ptr, ft_loop, &g);
 	mlx_hook(g.win.ptr, 2, 0, ft_key_down, &g);
 	mlx_hook(g.win.ptr, 3, 0, ft_key_up, &g);

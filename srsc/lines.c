@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/29 18:22:47 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/15 19:31:47 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/18 22:21:39 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,13 @@ if (x != 0 && y != 0) ft_mlx_pixel_put(g, cx - x, cy - y, WHITE);
 }
 
 
-void	plot_line(t_all *g, int x0, int y0, int x1, int y1)
+void	plot_line(t_all *g, double x0, double y0, double x1, double y1, int color)
 {
-	int dx =  abs (x1 - x0), sx = x0 < x1 ? 1 : -1;
-	int dy = -abs (y1 - y0), sy = y0 < y1 ? 1 : -1; 
+	double dx =  fabs (x1 - x0), sx = x0 < x1 ? 1 : -1;
+	double dy = -fabs (y1 - y0), sy = y0 < y1 ? 1 : -1; 
 	int err = dx + dy, e2; /* error value e_xy */
 	for (;;){  /* loop */
-		ft_mlx_pixel_put(g, x0, y0, WHITE);
+		ft_mlx_pixel_put(g, (int)x0, (int)y0, color);
 		if (x0 == x1 && y0 == y1) break;
 			e2 = 2 * err;
 		if (e2 >= dy) { err += dy; x0 += sx; } /* e_xy+e_x > 0 */
@@ -74,42 +74,41 @@ void	plot_line(t_all *g, int x0, int y0, int x1, int y1)
 	}
 }
 
-void	plot_rect(t_all *g, int x0, int y0, int x1, int y1)
+void	plot_rect(t_all *g, int x0, int y0, int x1, int y1, int color)
 {
-	plot_line(g, x0, y0, x1, y0);
-	plot_line(g, x1, y0, x1, y1);
-	plot_line(g, x1, y1, x0, y1);
-	plot_line(g, x0, y1, x0, y0);
+	plot_line(g, x0, y0, x1, y0, color);
+	plot_line(g, x1, y0, x1, y1, color);
+	plot_line(g, x1, y1, x0, y1, color);
+	plot_line(g, x0, y1, x0, y0, color);
 }
 
-void	plot_rect_r(t_all *g, int x0, int y0, int x1, int y1)
+void	plot_rect_r(t_all *g, int x0, int y0, int x1, int y1, int color)
 {
 	int y = y1 - y0;
 	
-	//(y >= 0) ? (y *= 1) : (y *= -1); 
 	while (y > 0)
 	{
 		int x = x1 - x0;
 		while (x > 0)
 		{
-			ft_mlx_pixel_put(g, x0 + x, y0 + y, WHITE);
+			ft_mlx_pixel_put(g, x0 + x, y0 + y, color);
 			x -= 1;
 		}
 		y -= 1;
 	}
 }
 
-void	raster_circle (t_all *g, int x0, int y0, int radius)
+void	raster_circle(t_all *g, int x0, int y0, int radius, int color)
 {
 	int f = 1 - radius;
 	int ddF_x = 1;
 	int ddF_y = -2 * radius;
 	int x = 0;
 	int y = radius;
-	ft_mlx_pixel_put(g, x0, y0 + radius, RED);
-	ft_mlx_pixel_put(g, x0, y0 - radius, RED);
-	ft_mlx_pixel_put(g, x0 + radius, y0, RED);
-	ft_mlx_pixel_put(g, x0 - radius, y0, RED);
+	ft_mlx_pixel_put(g, x0, y0 + radius, color);
+	ft_mlx_pixel_put(g, x0, y0 - radius, color);
+	ft_mlx_pixel_put(g, x0 + radius, y0, color);
+	ft_mlx_pixel_put(g, x0 - radius, y0, color);
 
 	while (x < y)
 	{
@@ -126,15 +125,15 @@ void	raster_circle (t_all *g, int x0, int y0, int radius)
 		ddF_x += 2;
 		f += ddF_x;    
 	
-	ft_mlx_pixel_put(g, x0 + x, y0 + y, RED);
-	ft_mlx_pixel_put(g, x0 - x, y0 + y, RED);
-	ft_mlx_pixel_put(g, x0 + x, y0 - y, RED);
-	ft_mlx_pixel_put(g, x0 - x, y0 - y, RED);
+	ft_mlx_pixel_put(g, x0 + x, y0 + y, color);
+	ft_mlx_pixel_put(g, x0 - x, y0 + y, color);
+	ft_mlx_pixel_put(g, x0 + x, y0 - y, color);
+	ft_mlx_pixel_put(g, x0 - x, y0 - y, color);
 	
-	ft_mlx_pixel_put(g, x0 + y, y0 + x, RED);
-	ft_mlx_pixel_put(g, x0 - y, y0 + x, RED);
-	ft_mlx_pixel_put(g, x0 + y, y0 - x, RED);
-	ft_mlx_pixel_put(g, x0 - y, y0 - x, RED);
+	ft_mlx_pixel_put(g, x0 + y, y0 + x, color);
+	ft_mlx_pixel_put(g, x0 - y, y0 + x, color);
+	ft_mlx_pixel_put(g, x0 + y, y0 - x, color);
+	ft_mlx_pixel_put(g, x0 - y, y0 - x, color);
 
   }
 }
