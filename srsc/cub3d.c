@@ -6,11 +6,178 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 22:38:37 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/19 12:45:23 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+
+void	uploadtex(t_all *g)
+{
+	int		i;
+	
+	i = 0;
+	ft_get_textures(g, &g->tex.so, "SO ./textures/bluestone.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.we, "WE ./textures/greystone.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.ea, "EA ./textures/mossy.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.no, "NO ./textures/purplestone.xpm", &i);
+	i = 0;
+	ft_get_textures(g, &g->tex.i,  "SS ./textures/fox.xpm", &i);
+}
+
+int		ft_sprite_list(t_all *g)
+{
+	int		i;
+	int		j;
+	int		k;
+
+	if (g->spr != NULL)
+		free(g->spr);
+	if (!(g->spr = malloc(sizeof(t_spr) * g->map.spr)))
+		return (-1);
+	i = 0;
+	j = 0;
+	while (j < g->map.y)
+	{
+		k = 0;
+		while (k < g->map.x)
+		{
+			if (g->map.arr[j][k] == '2')
+			{
+				g->spr[i].y = (double)j + 0.5;
+				g->spr[i++].x = (double)k + 0.5;
+			}
+			k++;
+		}
+		j++;
+	}
+	return (1);
+}
+
+unsigned int	ft_sprite_take_pixel(t_all *gl, int i, unsigned int col)
+{
+	int	t;
+	int	r;
+	int	g;
+	int	b;
+	int size;
+
+	size = 256;
+	if (col >= NONE)
+		return (gl->img.adr[i]);
+	else if (col < pow(size, 3))
+		return (col);
+	t = col / (int)(pow(size, 3));
+	r = (col / (int)(pow(size, 2)) % size) * (1 - (double)t / size);
+	g = (col / size % size) * (1 - (double)t / size);
+	b = (col % size) * (1 - (double)t / size);
+	r += (gl->img.adr[i] / (int)(pow(size, 2)) % size) * ((double)t / size);
+	g += (gl->img.adr[i] / size % size) * ((double)t / size);
+	b += (gl->img.adr[i] % size) * ((double)t / size);
+	return (r * pow(size, 2) + g * size + b);
+}
+
+void			ft_sprite_draw(t_all *g, int loc, double dist)
+{
+	unsigned int	col;
+	double			size;
+	int				index;
+	int				i;
+	int				j;
+
+	i = 0;
+	j = 0;
+	size = g->win.y / dist / 2;
+	loc = loc - size / 2;
+	while (i < size)
+	{
+		while ((loc + i >= 0 && loc + i < g->win.x) &&
+				(j < size && g->stk[loc + i].d > dist))
+		{
+			col = 64 * floor(64 * (double)j / size) + (double)i / size * 64;
+			col = g->tex.i[col];
+			index = loc + i + (g->win.y / 2 + j) * g->win.x;
+			if (index < g->win.x * g->win.y)
+				g->img.adr[index] = ft_sprite_take_pixel(g, index, col);
+			j++;
+		}
+		i++;
+		j = 0;
+	}
+}
+
+void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist)
+{
+	double	angle;
+
+	dirx = (dirx - g->pl.x) / dist;
+	diry = (diry - g->pl.y) / dist;
+	if (diry <= 0)
+		angle = acos(dirx) * 180 / M_PI;
+	else
+		angle = 360 - acos(dirx) * 180 / M_PI;
+	angle = g->dir.a - angle + 33;
+	if (angle >= 180)
+		angle -= 360;
+	else if (angle <= -180)
+		angle += 360;
+	ft_sprite_draw(g, angle * g->win.x / 66, dist);
+}
+
+void			ft_sprite_order(t_all *g)
+{
+	t_spr	tmp;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (i < g->map.spr - 1)
+	{
+		j = i + 1;
+		while (j < g->map.spr)
+		{
+			if (g->spr[i].d < g->spr[j].d)
+			{
+				tmp = g->spr[i];
+				g->spr[i] = g->spr[j];
+				g->spr[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+void			ft_sprite(t_all *g)
+{
+	int		i;
+	double	dist;
+
+	dist = hypot(g->dir.x, g->dir.y);
+	if (g->dir.y <= 0)
+		g->dir.a = acos(g->dir.x / dist) * 180 / M_PI;
+	else
+		g->dir.a = 360 - acos(g->dir.x / dist) * 180 / M_PI;
+	i = 0;
+	while (i < g->map.spr)
+	{
+		g->spr[i].d = hypot(g->spr[i].x - g->pl.x, g->spr[i].y - g->pl.y);
+		i++;
+	}
+	ft_sprite_order(g);
+	i = 0;
+	while (i < g->map.spr)
+	{
+		ft_sprite_loc(g, g->spr[i].x, g->spr[i].y, g->spr[i].d);
+		i++;
+	}
+	free(g->stk);
+}
+
 
 int		ft_check_xpmfile(char *arg)
 {
@@ -42,6 +209,7 @@ int		ft_load_xpm(t_all *g, unsigned int **adr, char *file)
 	if (img == NULL || tab[0] != size || tab[1] != size)
 		return (-1);
 	*adr = (unsigned int *)mlx_get_data_addr(img, &tab[3], &tab[3], &tab[4]);
+	printf("file uploaded: %s\n", file);
 	free(img);
 	return (0);
 }
@@ -54,7 +222,7 @@ int		ft_skip_whitespaces(char *line, int *pos)
 	return (1);
 }
 
-int		ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i)
+int		ft_get_textures(t_all *g, unsigned int **adr, char *line, int *i)
 {
 	char	*file;
 	int		j;
@@ -64,6 +232,7 @@ int		ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i)
 	(*i) += 2;
 	ft_skip_whitespaces(line, i);
 	j = *i;
+	printf("try to load: %s\n", line);
 	while (line[*i] != ' ' && line[*i] != '\0')
 		(*i)++;
 	if (!(file = malloc(sizeof(char) * (*i - j + 1))))
@@ -73,7 +242,7 @@ int		ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i)
 	while (line[*i] != ' ' && line[*i] != '\0')
 		file[j++] = line[(*i)++];
 	file[j] = '\0';
-	j = ft_load_xpm(s, adr, file);
+	j = ft_load_xpm(g, adr, file);
 	free(file);
 	return (j == -1 ? -9 : 0);
 }
@@ -342,6 +511,7 @@ void	ft_screen(t_all *g)
 		ft_minimap(g);
 		g->ray.i++;
 	}
+	ft_sprite(g);
 }
 
 void	ft_draw(t_all *g)
@@ -352,8 +522,6 @@ void	ft_draw(t_all *g)
 	t_ray	ray;
 	t_hit	hit;
 	int i;
-
-	//mlx_do_sync(g->mlx.ptr);
 	
 	ray.x = 0;
 	ray.y = 0;
@@ -365,16 +533,8 @@ void	ft_draw(t_all *g)
 	hit.d = 0;
 	g->ray = ray;
 	g->hit = hit;
-	
-	i = 0;
-	ft_get_textures(g, &g->tex.so, "SO ./textures/bluestone.xpm", &i);
-	i = 0;
-	ft_get_textures(g, &g->tex.we, "WE ./textures/greystone.xpm", &i);
-	i = 0;
-	ft_get_textures(g, &g->tex.ea, "EA ./textures/mossy.xpm", &i);
-	i = 0;
-	ft_get_textures(g, &g->tex.no, "NO ./textures/purplestone.xpm", &i);
 
+	
 	//printf("BEFORE player_pos [%.3f;%.3f] dir [%.3f;%.3f]\n", g->pl.x, g->pl.y, g->dir.x, g->dir.y);
 
 	ft_screen(g);
@@ -648,13 +808,26 @@ t_img	text1;
 					g.pl.y = j;
 					g.dir.a = acos(g.dir.x) * (g.dir.y < 0 ? 1 : -1);
 				}
+			if (*(g.map.arr[j] + i) == '2')
+				g.map.spr += 1;
 			i++;
 		}
 		j++;
 	}
 
+	// parsing map
+
+	g.spr = NULL;
+	ft_sprite_list(&g);
+
+	
+
 	// Drawing main window using mlx
 	g.mlx.ptr = mlx_init();
+
+	// uploading textures
+	uploadtex(&g);
+
 
 	ft_turn(&g, 1);
 	ft_forward(&g, 1);

@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/18 22:37:51 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/19 11:51:33 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void			ft_player(t_all *g);
 
 void			ft_sideways(t_all *g, double c);
 void			ft_forward(t_all *g, double c);
-void			ft_turn(t_all *s, double c);
+void			ft_turn(t_all *g, double c);
 void			ft_mlx_pixel_put(t_all *data, int x, int y, int color);
 
 void			ft_ray(t_all *g);
@@ -218,12 +218,18 @@ void			ft_hor(t_all *g);
 int				ft_size(t_all *g);
 void			ft_column(t_all *g, int size);
 
-int				ft_get_textures(t_all *s, unsigned int **adr, char *line, int *i);
+int				ft_get_textures(t_all *g, unsigned int **adr, char *line, int *i);
 unsigned int	ft_take_pixel(t_all *g, double pos);
 
 int				ft_load_xpm(t_all *g, unsigned int **adr, char *file);
 int				ft_check_xpmfile(char *arg);
 
+unsigned int	ft_sprite_take_pixel(t_all *gl, int index, unsigned int col);
+void			ft_sprite_draw(t_all *g, int loc, double dist);
+void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist);
+void			ft_sprite_order(t_all *g);
+int				ft_sprite_list(t_all *g);
+void			ft_sprite(t_all *g);
 
 
 void    		circle(t_all *g, int cx, int cy, int radius);
