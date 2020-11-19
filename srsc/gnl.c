@@ -6,107 +6,136 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 23:16:01 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/10/27 22:12:51 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/19 22:03:07 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void			ft_strclr(char *s)
+char	*error(char *stock)
 {
-	if (s)
-		while (*s)
-			*s++ = '\0';
+	free(stock);
+	return (NULL);
 }
 
-int				free_str(char **s1, char **s2)
+int		newline_check(char *stock, int read_size)
 {
-	if (*s1)
-	{
-		free(*s1);
-		*s1 = NULL;
-	}
-	if (*s2)
-	{
-		free(*s2);
-		*s2 = NULL;
-	}
-	return (-1);
-}
+	int	i;
 
-char			*fill_line(char *residue, char **line, int *err)
-{
-	char		*p_n;
-
-	p_n = NULL;
-	if (residue)
+	i = 0;
+	if (stock == NULL)
+		return (0);
+	if (read_size == 0)
+		return (1);
+	while (stock[i] != '\0')
 	{
-		if ((p_n = ft_strchr(residue, '\n')))
-		{
-			*p_n = '\0';
-			*line = ft_strdup(residue, err);
-			p_n++;
-			ft_strcpy(residue, p_n);
-		}
-		else
-		{
-			*line = ft_strdup(residue, err);
-			ft_strclr(residue);
-		}
+		if (stock[i] == '\n')
+			return (1);
+		i++;
 	}
-	else
-		*line = ft_strdup("", err);
-	return (p_n);
-}
-
-int				trunc_line(char **line, char **residue, char **p_n, char **buf)
-{
-	char		*tmp;
-	int			errh;
-
-	errh = 1;
-	if ((*p_n = ft_strchr(*buf, '\n')))
-	{
-		**p_n = '\0';
-		(*p_n)++;
-		free(*residue);
-		if (!(*residue = ft_strdup(*p_n, &errh)))
-			return (-1);
-	}
-	tmp = *line;
-	if (!(*line = ft_strjoin(*line, *buf, &errh)))
-	{
-		free(tmp);
-		return (-1);
-	}
-	free(tmp);
 	return (0);
 }
 
-int				get_next_line(int fd, char **line)
+char	*buf_join(char *stock, char *buf)
 {
-	char		*buf;
-	static char	*residue;
-	char		*p_n;
-	int			bwr;
-	int			err;
+	int		i;
+	int		j;
+	char	*new;
 
-	err = 1;
-	if (read(fd, NULL, 0) < 0 || !line || BUFFER_SIZE < 1)
-		return (-1);
-	bwr = 1;
-	p_n = fill_line(residue, line, &err);
-	if (!(buf = malloc(sizeof(char) * (BUFFER_SIZE + 1))))
-		return (free_str(&buf, line));
-	while (!p_n && (bwr = read(fd, buf, BUFFER_SIZE)) > 0)
+	i = 0;
+	j = 0;
+	while (stock != NULL && stock[i] != '\0')
+		i++;
+	while (buf[j] != '\0')
+		j++;
+	if (!(new = malloc(sizeof(char) * (i + j + 1))))
+		return (error(stock));
+	i = 0;
+	j = 0;
+	while (stock != NULL && stock[i] != '\0')
+		new[i++] = stock[j++];
+	j = 0;
+	while (buf[j] != '\0')
+		new[i++] = buf[j++];
+	new[i] = '\0';
+	if (stock != NULL)
+		free(stock);
+	return (new);
+}
+
+char	*stock_trim(char *stock)
+{
+	int		i;
+	int		j;
+	char	*trimmed;
+
+	i = 0;
+	j = 0;
+	while (stock[i] != '\n' && stock[i] != '\0')
+		i++;
+	while (stock[i++] != '\0')
+		j++;
+	if (!(trimmed = malloc(sizeof(char) * j + 1)))
+		return (error(stock));
+	i = 0;
+	j = 0;
+	while (stock[i] != '\n' && stock[i] != '\0')
+		i++;
+	if (stock[i] == '\0')
+		i--;
+	i++;
+	while (stock[i] != '\0')
+		trimmed[j++] = stock[i++];
+	trimmed[j] = '\0';
+	free(stock);
+	return (trimmed);
+}
+
+char	*get_line(char *stock)
+{
+	int		i;
+	char	*line;
+
+	i = 0;
+	while (stock[i] != '\n' && stock[i] != '\0')
+		i++;
+	if (!(line = malloc(sizeof(char) * i + 1)))
+		return (error(stock));
+	i = 0;
+	while (stock[i] != '\n' && stock[i] != '\0')
 	{
-		buf[bwr] = '\0';
-		err = trunc_line(line, &residue, &p_n, &buf);
+		line[i] = stock[i];
+		i++;
 	}
-	free(buf);
-	if (bwr < 0 || err == -1)
-		return (free_str(&buf, &residue));
-	if (bwr == 0 && residue != 0)
-		free_str(&residue, &residue);
-	return ((p_n || bwr) ? 1 : 0);
+	line[i] = '\0';
+	return (line);
+}
+
+int		get_next_line(int fd, char **line)
+{
+	int			read_size;
+	char		buf[4096];
+	static char	*stock = NULL;
+
+	if (line == NULL || fd < 0)
+		return (-3);
+	*line = NULL;
+	read_size = 1;
+	while (!(newline_check(stock, read_size)))
+	{
+		if ((read_size = read(fd, buf, 4095)) == -1)
+			return (-3);
+		buf[read_size] = '\0';
+		if ((stock = buf_join(stock, buf)) == NULL)
+			return (-3);
+	}
+	if ((*line = get_line(stock)) == NULL)
+		return (-3);
+	if (read_size == 0)
+		free(stock);
+	if (read_size == 0)
+		return (0);
+	if ((stock = stock_trim(stock)) == NULL)
+		return (-3);
+	return (1);
 }

@@ -13,10 +13,22 @@ HEADER = cub3d.h
 B_HEADER = cub3d_bonus.h
 
 SRC = cub3d \
+	draw \
+	draw_shapes \
+	frame \
 	gnl \
 	gnl_utils \
+	init \
+	key_handle \
 	load \
-	lines \
+	map \
+	minimap \
+	movements \
+	raycast \
+	setup \
+	sprites \
+	texture \
+	tools \
 
 FIL = $(addsuffix .c, $(addprefix srsc/, $(SRC)))
 
@@ -63,7 +75,7 @@ fclean: clean
 re: fclean all
 
 run: re 
-	./$(NAME) maps/123.cub  
+	./$(NAME) maps/map.cub  
 
 bonus: fclean $(B_OBJ)
 	@echo "\n\033[0;32mCompiling bonus..."
