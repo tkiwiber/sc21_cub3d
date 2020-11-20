@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 14:23:52 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 15:22:34 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 16:32:31 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	ft_create_frame(t_all *g)
 {
-	int i;
 	
 	g->img.ptr = mlx_new_image(g->mlx.ptr, g->win.x, g->win.y);
 	g->img.adr = (unsigned int *)mlx_get_data_addr(g->img.ptr, \

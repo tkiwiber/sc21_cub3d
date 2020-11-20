@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 17:49:17 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 10:36:59 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 16:32:44 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ t_err	    	ft_init_err()
 t_img	    	ft_init_img()
 {
 	t_img	img;
-	t_spr	*spr;
-	t_stk	*stk;
 
 	img.ptr = NULL;
 	img.adr = NULL;

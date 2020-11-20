@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 10:37:10 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 16:27:51 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,12 +139,12 @@ typedef struct	s_spr
 
 typedef struct	s_key
 {
-	int			step_left;
-	int			step_right;
-	int			step_forward;
-	int			step_back;
-	int			turn_left;
-	int			turn_right;
+	int				step_left;
+	int				step_right;
+	int				step_forward;
+	int				step_back;
+	int				turn_left;
+	int				turn_right;
 }				t_key;
 
 typedef struct	s_stk
@@ -220,11 +220,18 @@ void			ft_set_position(t_all *g);
 /*
 				create map from .cub file (map.c)
 */
-int				ft_fill_map(t_all *g, char *line, int *i);
+int				ft_map_fill(t_all *g, char *line, int *i);
+int				ft_sprite_list(t_all *g);
 int				ft_map_lenght(t_all *g, char *line);
-char			*ft_slab(t_all *g, char *line, int *i);
-int		ft_parcheck(t_all *g);
-int		ft_mapcheck(t_all *g);
+char			*ft_map_line(t_all *g, char *line, int *i);
+
+/*
+				check nessary values (checkup.c)
+*/
+int				ft_check_load(t_all *g);
+int				ft_check_map(t_all *g);
+int				ft_check_extension(char *arg, char *mask);
+int				ft_check_option(char *arg, char *mask);
 
 /*
 				some helpful tools (tools.c)
@@ -232,12 +239,16 @@ int		ft_mapcheck(t_all *g);
 int				ft_atoi(char *line, int *i);
 int				ft_skip_whitespaces(char *line, int *pos);
 int				ft_strerror(int err);
-size_t			ft_strlcpy(char *dest, const char *src, size_t destsize);
+int				ft_strerror2(int err);
+int				ft_close(t_all *g, int win);
 
-
-
-int				ft_check_extension(char *arg, char *save);
-int				ft_check_option(char *arg, char *ext);
+/*
+				save first rendered image (save_image.c)
+*/
+int				ft_bmp_save(t_all *g);
+void			ft_bmp_header(t_all *g, int fd);
+void			ft_bmp_info(t_all *g, int fd);
+void			ft_bmp_data(t_all *g, int fd);
 
 /*
 				key events handle (key_handle.c)
@@ -296,14 +307,7 @@ unsigned int	ft_sprite_take_pixel(t_all *gl, int index, unsigned int col);
 void			ft_sprite_draw(t_all *g, int loc, double dist);
 void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist);
 void			ft_sprite_order(t_all *g);
-int				ft_sprite_list(t_all *g);
 void			ft_sprite(t_all *g);
-
-
-
-int				ft_close(t_all *g, int win);
-
-
 
 /*
 				draw shapes functions (***.c)

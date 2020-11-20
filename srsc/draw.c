@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:19:31 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 15:54:55 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 15:28:37 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,4 @@ void			ft_draw(t_all *g, int size)
 		g->ray.i += g->win.x;
 	}
 	g->ray.i -= g->win.x * g->win.y;
-}
-
-int		ft_close(t_all *g, int win)
-{
-	int	i;
-	i = 0;
-	while (i < g->map.y)
-		free(g->map.arr[i++]);
-	free(g->map.arr);
-	if (win == 1)
-		mlx_destroy_window(g->mlx.ptr, g->win.ptr);
-	free(g->mlx.ptr);
-	exit(0);
-	return (1);
 }

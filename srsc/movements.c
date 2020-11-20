@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 13:53:10 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 10:39:34 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 13:14:33 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,5 @@ void    ft_init_movement(t_all *g)
 	ft_step(g, 1);
 	ft_turn(g, -1);
 	ft_step(g, -1);
+	ft_sprite_list(g);
 }

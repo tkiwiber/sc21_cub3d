@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:58:27 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 10:41:52 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 12:44:23 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int				ft_parse_line(t_all *g, char *l)
 	i = 0;
 	ft_skip_whitespaces(l, &i);
 	if ((l[i] == '1' || g->err.m == 1) && l[i] != '\0')
-		g->err.n = ft_fill_map(g, l, &i);
+		g->err.n = ft_map_fill(g, l, &i);
 	else if (l[i] == 'R' && l[i + 1] == ' ')
 		g->err.n = ft_set_resolution(g, l, &i);
 	else if (l[i] == 'N' && l[i + 1] == 'O' && l[i + 2] == ' ')
@@ -130,5 +130,5 @@ int				ft_read_file(t_all *g, char *file)
 	ft_set_position(g);
 	g->spr = NULL;
 	ft_sprite_list(g);
-	return (1); // input errno
+	return (ft_check_load(g));
 }

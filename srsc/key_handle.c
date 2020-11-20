@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 13:11:13 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 18:08:19 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 16:32:54 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int		ft_key_down(int key, t_all *g)
 {	
-	static int n = 0;
 	if (key == ESC)
 		ft_close(g, 1);
 	else if (key == A)
