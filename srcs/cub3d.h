@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 16:27:51 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 18:00:09 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 # define STEP 0.1
 # define TURN 0.05
 
-#define BUFFER_SIZE 1024
+# define BUFFER_SIZE 1024
 
 typedef struct	s_mlx
 {
@@ -171,36 +171,27 @@ typedef struct	s_all
 	t_key			key;
 }				t_all;
 
-/*
-				get next line utilities (gnl_utils.c)
-*/
 size_t			ft_strlen(const char *str);
 char			*ft_strdup(const char *str, int *err);
 char			*ft_strjoin(char *s1, char *s2, int *err);
 char			*ft_strcpy(char *dest, char *src);
 char			*ft_strchr(const char *s, int c);
 
-/*
-				get next line (gnl.c)
-*/
-
 char			*fill_line(char *root, char **line, int *err);
-int				ft_trunc_line(char **line, char **residue, char **p_n, char **buf);
+int				ft_trunc_line(char **line, char **residue, char **p_n, \
+				char **buf);
 void			ft_strclr(char *g);
 int				get_next_line(int fd, char **line);
 int				free_str(char **s1, char **s2);
 
-/*
-				initialize all structures (init.c)
-*/
 t_mlx			ft_init_mlx();
 t_tex			ft_init_tex();
 t_win			ft_init_win();
 t_map			ft_init_map();
 t_err			ft_init_err();
 t_img			ft_init_img();
-t_plp			ft_init_pp();
-t_pld			ft_init_pd();
+t_plp			ft_init_plp();
+t_pld			ft_init_pld();
 t_ray			ft_init_ray();
 t_hit			ft_init_hit();
 t_key			ft_init_key();
@@ -208,114 +199,65 @@ t_spr			*ft_init_spr();
 t_stk			*ft_init_stk();
 void			ft_init_all(t_all *g);
 
-/*
-				setup all enviroment from .cub file (setup.c)
-*/
 int				ft_read_file(t_all *g, char *file);
 int				ft_parse_line(t_all *s, char *l);
 int				ft_set_resolution(t_all *g, char *line, int *i);
 int				ft_set_colors(unsigned int *color, char *line, int *i);
 void			ft_set_position(t_all *g);
 
-/*
-				create map from .cub file (map.c)
-*/
 int				ft_map_fill(t_all *g, char *line, int *i);
 int				ft_sprite_list(t_all *g);
 int				ft_map_lenght(t_all *g, char *line);
 char			*ft_map_line(t_all *g, char *line, int *i);
 
-/*
-				check nessary values (checkup.c)
-*/
 int				ft_check_load(t_all *g);
 int				ft_check_map(t_all *g);
 int				ft_check_extension(char *arg, char *mask);
 int				ft_check_option(char *arg, char *mask);
 
-/*
-				some helpful tools (tools.c)
-*/
 int				ft_atoi(char *line, int *i);
 int				ft_skip_whitespaces(char *line, int *pos);
 int				ft_strerror(int err);
 int				ft_strerror2(int err);
 int				ft_close(t_all *g, int win);
 
-/*
-				save first rendered image (save_image.c)
-*/
 int				ft_bmp_save(t_all *g);
 void			ft_bmp_header(t_all *g, int fd);
 void			ft_bmp_info(t_all *g, int fd);
 void			ft_bmp_data(t_all *g, int fd);
 
-/*
-				key events handle (key_handle.c)
-*/
 int				ft_key_up(int key, t_all *g);
 int				ft_key_down(int key, t_all *g);
 int				ft_update_movement(t_all *g);
 
-/*
-				create frame and update screen (frame.c)
-*/
 void			ft_create_frame(t_all *g);
 int				ft_update_frame(t_all *g);
 void			ft_put_frame(t_all *g);
 
-/*
-				recalculate all params when move (movements.c)
-*/
 void			ft_step(t_all *g, double c);
 void			ft_turn(t_all *g, double c);
 void			ft_sideways(t_all *g, double c);
-void 			ft_init_movement(t_all *g);
+void			ft_init_movement(t_all *g);
 
-/*
-				add minimap on screen (minimap.c)
-*/
-void			ft_minimap(t_all *g);
-
-/*
-				calculate all params while raycast (raycast.c)
-*/
 void			ft_raycast(t_all *g);
 void			ft_direction(t_all *g);
 void			ft_vertical_wall(t_all *g);
 void			ft_horizontal_wall(t_all *g);
 void			ft_stock(t_all *g);
 
-/*
-				calculate all params while raycast (draw.c)
-*/
 unsigned int	ft_take_pixel(t_all *g, double pos);
 int				ft_modify_height(t_all *g);
 void			ft_draw(t_all *g, int size);
 
-/*
-				calculate all params while raycast (texture.c)
-*/
 int				ft_check_xpm_file(char *arg);
 int				ft_load_xpm_file(t_all *g, unsigned int **adr, char *file);
-int				ft_get_textures(t_all *g, unsigned int **adr, char *line, int *i);
+int				ft_get_textures(t_all *g, unsigned int **adr, char *line,\
+				int *i);
 
-/*
-				calculate all params while raycast (draw.c)
-*/
 unsigned int	ft_sprite_take_pixel(t_all *gl, int index, unsigned int col);
 void			ft_sprite_draw(t_all *g, int loc, double dist);
 void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist);
 void			ft_sprite_order(t_all *g);
 void			ft_sprite(t_all *g);
-
-/*
-				draw shapes functions (***.c)
-*/
-void			ft_plot_line(t_all *g, double x0, double y0, double x1, double y1, int color);
-void			ft_plot_rect(t_all *g, int x0, int y0, int x1, int y1, int color);
-void			ft_plot_rect_r(t_all *g, int x0, int y0, int x1, int y1, int color);
-void			ft_mlx_pixel_put(t_all *data, int x, int y, int color);
-
 
 #endif

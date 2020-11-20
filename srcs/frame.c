@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 14:23:52 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 16:32:31 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:37:29 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 
 void	ft_create_frame(t_all *g)
 {
-	
 	g->img.ptr = mlx_new_image(g->mlx.ptr, g->win.x, g->win.y);
 	g->img.adr = (unsigned int *)mlx_get_data_addr(g->img.ptr, \
 	&g->img.bpp, &g->img.sl, &g->img.end);
 	g->stk = malloc(sizeof(t_stk) * g->win.x);
-
 	while (g->ray.i < g->win.x)
 	{
 		ft_raycast(g);
@@ -28,7 +26,6 @@ void	ft_create_frame(t_all *g)
 		ft_horizontal_wall(g);
 		ft_stock(g);
 		ft_draw(g, ft_modify_height(g));
-		ft_minimap(g);
 		g->ray.i++;
 	}
 	ft_sprite(g);
@@ -38,7 +35,7 @@ void	ft_put_frame(t_all *g)
 {
 	t_ray	ray;
 	t_hit	hit;
-	
+
 	ray.x = 0;
 	ray.y = 0;
 	ray.i = 0;

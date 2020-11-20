@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 12:00:13 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 15:15:43 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:20:46 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int		ft_check_map(t_all *g)
 				return (-1);
 			else if (g->map.arr[i][j] != '1' && j == g->map.x - 1)
 				return (-1);
-            else if (g->map.arr[i][j] != '1' && i == g->map.y - 1)
+			else if (g->map.arr[i][j] != '1' && i == g->map.y - 1)
 				return (-1);
 			j++;
 		}
@@ -72,17 +72,17 @@ int		ft_check_load(t_all *g)
 		return (ft_strerror(-14));
 	else if (g->tex.no == NULL)
 		return (ft_strerror(-151));
-    else if (g->tex.so == NULL)
+	else if (g->tex.so == NULL)
 		return (ft_strerror(-152));
-    else if (g->tex.ea == NULL)
+	else if (g->tex.ea == NULL)
 		return (ft_strerror(-153));
-    else if (g->tex.we == NULL)
+	else if (g->tex.we == NULL)
 		return (ft_strerror(-154));
-    else if (g->tex.sp == NULL)
+	else if (g->tex.sp == NULL)
 		return (ft_strerror(-155));
 	else if (g->tex.ce == NONE)
 		return (ft_strerror(-161));
-    else if (g->tex.fl == NONE)
+	else if (g->tex.fl == NONE)
 		return (ft_strerror(-162));
 	else if (g->err.p == 0)
 		return (ft_strerror(-17));

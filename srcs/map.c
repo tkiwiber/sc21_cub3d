@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:25:06 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 12:14:47 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:10:45 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char			*ft_map_line(t_all *s, char *line, int *i)
 	return (m_line);
 }
 
-int		ft_sprite_list(t_all *g)
+int				ft_sprite_list(t_all *g)
 {
 	int		i;
 	int		j;

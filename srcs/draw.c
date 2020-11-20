@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:19:31 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 15:28:37 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:22:17 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,22 @@ void			ft_draw(t_all *g, int size)
 	unsigned int	color;
 	int				start;
 	int				count;
-	
+
 	start = g->win.x * (g->win.y - size) / 2;
 	if (size > g->win.y)
 		count = (size - g->win.y) / 2;
 	else
 		count = 0;
-	color = SLATEGRAY;
+	color = g->tex.ce;
 	while (g->ray.i < g->win.x * g->win.y)
 	{
 		if (g->ray.i >= start && count < size)
-		{			
+		{
 			color = ft_take_pixel(g, (double)count / size);
 			count++;
 		}
 		else if (count == size)
-			color = SLATEGRAY; /// <------  change
+			color = g->tex.fl;
 		g->img.adr[g->ray.i] = mlx_get_color_value(g->mlx.ptr, color);
 		g->ray.i += g->win.x;
 	}

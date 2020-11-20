@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:58:27 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 12:44:23 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:07:03 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void			ft_set_position(t_all *g)
 int				ft_parse_line(t_all *g, char *l)
 {
 	int		i;
-	
+
 	i = 0;
 	ft_skip_whitespaces(l, &i);
 	if ((l[i] == '1' || g->err.m == 1) && l[i] != '\0')
@@ -112,7 +112,7 @@ int				ft_read_file(t_all *g, char *file)
 	char	*line;
 	int		fd;
 	int		ret;
-	
+
 	ret = 1;
 	fd = open(file, O_RDONLY);
 	if (fd == -1)
@@ -124,7 +124,7 @@ int				ft_read_file(t_all *g, char *file)
 			ret = -1;
 		free(line);
 	}
-	close (fd);
+	close(fd);
 	if (ret == -1 || ret == -3)
 		return (ft_strerror(ret + 1));
 	ft_set_position(g);

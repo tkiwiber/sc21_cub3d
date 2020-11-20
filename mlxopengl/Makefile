@@ -14,8 +14,9 @@ CFLAGS+= -DSTRINGPUTX11
 all: $(NOM)
 
 $(NOM):	$(OBJ)
-	ar -r $(NOM) $(OBJ)
-	ranlib $(NOM)
+	echo comiling libmlx ...
+	@ar -r $(NOM) $(OBJ)
+	@ranlib $(NOM)
 
 clean:
 	rm -f $(NOM) $(OBJ) *~

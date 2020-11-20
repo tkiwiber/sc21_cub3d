@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 15:56:45 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 18:54:34 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int		ft_start(char *file, int save)
 	t_all	g;
 
 	ft_init_all(&g);
-	g.mlx.ptr = mlx_init();	
+	g.mlx.ptr = mlx_init();
 	if (ft_read_file(&g, file) == -1)
 		return (ft_close(&g, 0));
 	if (save)

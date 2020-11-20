@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:23:53 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 21:03:34 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:11:10 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		ft_load_xpm_file(t_all *g, unsigned int **adr, char *file)
 	void	*img;
 	int		tab[5];
 	int		size;
-	
+
 	size = 64;
 	if (ft_check_xpm_file(file) == 0)
 		return (-1);

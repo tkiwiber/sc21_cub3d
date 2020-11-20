@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:48:10 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 15:29:04 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:09:29 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int				ft_atoi(char *line, int *i)
 {
-	int	num;
+	int		num;
 
 	num = 0;
 	ft_skip_whitespaces(line, i);
@@ -69,9 +69,10 @@ int				ft_strerror(int err)
 	return (-1);
 }
 
-int		ft_close(t_all *g, int win)
+int				ft_close(t_all *g, int win)
 {
-	int	i;
+	int		i;
+
 	i = 0;
 	while (i < g->map.y)
 		free(g->map.arr[i++]);

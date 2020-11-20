@@ -6,13 +6,13 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 14:41:34 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 10:40:32 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:10:00 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	ft_raycast(t_all *g)
+void			ft_raycast(t_all *g)
 {
 	double	ang;
 	double	dis;
@@ -26,8 +26,8 @@ void	ft_raycast(t_all *g)
 	g->ray.y /= dis;
 }
 
-void	ft_direction(t_all *g)
-{	
+void			ft_direction(t_all *g)
+{
 	if (g->ray.x >= 0)
 		g->ray.v = 1;
 	else
@@ -38,14 +38,14 @@ void	ft_direction(t_all *g)
 		g->ray.w = 0;
 }
 
-void	ft_vertical_wall(t_all *g)
+void			ft_vertical_wall(t_all *g)
 {
 	double	x;
 	double	y;
 
 	x = floor(g->plp.x) + g->ray.v;
 	y = g->plp.y + (x - g->plp.x) * (g->ray.y / g->ray.x);
-	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y )
+	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y)
 	{
 		if (g->map.arr[(int)floor(y)][(int)(x - 1 + g->ray.v)] == '1')
 		{
@@ -62,7 +62,7 @@ void	ft_vertical_wall(t_all *g)
 	g->hit.d = 99999999;
 }
 
-void	ft_horizontal_wall(t_all *g)
+void			ft_horizontal_wall(t_all *g)
 {
 	double	y;
 	double	x;

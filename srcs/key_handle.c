@@ -6,14 +6,14 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 13:11:13 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 16:32:54 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:18:05 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
 int		ft_key_down(int key, t_all *g)
-{	
+{
 	if (key == ESC)
 		ft_close(g, 1);
 	else if (key == A)
@@ -32,7 +32,7 @@ int		ft_key_down(int key, t_all *g)
 }
 
 int		ft_key_up(int key, t_all *g)
-{	
+{
 	if (key == ESC)
 		ft_close(g, 1);
 	else if (key == A)
@@ -66,4 +66,3 @@ int		ft_update_movement(t_all *g)
 		ft_turn(g, 1);
 	return (1);
 }
-
