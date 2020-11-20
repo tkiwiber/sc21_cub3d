@@ -1,5 +1,6 @@
 # MacOS file
 .DS_Store
+.vscode/
 
 # Prerequisites
 *.d
