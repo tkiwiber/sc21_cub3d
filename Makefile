@@ -75,7 +75,7 @@ fclean: clean
 re: fclean all
 
 run: re 
-	./$(NAME) maps/map.cub  
+	./$(NAME) maps/wowo.cub  
 
 bonus: fclean $(B_OBJ)
 	@echo "\n\033[0;32mCompiling bonus..."

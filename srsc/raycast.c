@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 14:41:34 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 15:11:41 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:40:32 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	ft_raycast(t_all *g)
 
 	ang = ((double)g->ray.i - (g->win.x / 2)) * 33 / (g->win.x / 2);
 	ang = ang * M_PI / 180;
-	g->ray.x = g->dir.x * cos(ang) - g->dir.y * sin(ang);
-	g->ray.y = g->dir.y * cos(ang) + g->dir.x * sin(ang);
+	g->ray.x = g->pld.x * cos(ang) - g->pld.y * sin(ang);
+	g->ray.y = g->pld.y * cos(ang) + g->pld.x * sin(ang);
 	dis = hypot(g->ray.x, g->ray.y);
 	g->ray.x /= dis;
 	g->ray.y /= dis;
@@ -43,22 +43,22 @@ void	ft_vertical_wall(t_all *g)
 	double	x;
 	double	y;
 
-	x = floor(g->pl.x) + g->ray.v;
-	y = g->pl.y + (x - g->pl.x) * (g->ray.y / g->ray.x);
+	x = floor(g->plp.x) + g->ray.v;
+	y = g->plp.y + (x - g->plp.x) * (g->ray.y / g->ray.x);
 	while ((int)floor(y) > 0 && (int)floor(y) < g->map.y )
 	{
 		if (g->map.arr[(int)floor(y)][(int)(x - 1 + g->ray.v)] == '1')
 		{
 			g->hit.x = x;
 			g->hit.y = y;
-			g->hit.d = hypot(x - g->pl.x, y - g->pl.y);
+			g->hit.d = hypot(x - g->plp.x, y - g->plp.y);
 			return ;
 		}
 		x += (2 * g->ray.v - 1);
 		y += (2 * g->ray.v - 1) * g->ray.y / g->ray.x;
 	}
-	g->hit.x = g->pl.x;
-	g->hit.y = g->pl.y;
+	g->hit.x = g->plp.x;
+	g->hit.y = g->plp.y;
 	g->hit.d = 99999999;
 }
 
@@ -67,17 +67,17 @@ void	ft_horizontal_wall(t_all *g)
 	double	y;
 	double	x;
 
-	y = floor(g->pl.y) + g->ray.w;
-	x = g->pl.x + (y - g->pl.y) * (g->ray.x / g->ray.y);
+	y = floor(g->plp.y) + g->ray.w;
+	x = g->plp.x + (y - g->plp.y) * (g->ray.x / g->ray.y);
 	while ((int)floor(x) > 0 && (int)floor(x) < g->map.x)
 	{
 		if (g->map.arr[(int)(y - 1 + g->ray.w)][(int)floor(x)] == '1')
 		{
-			if (g->hit.d > hypot(x - g->pl.x, y - g->pl.y))
+			if (g->hit.d > hypot(x - g->plp.x, y - g->plp.y))
 			{
 				g->hit.x = x;
 				g->hit.y = y;
-				g->hit.d = hypot(x - g->pl.x, y - g->pl.y);
+				g->hit.d = hypot(x - g->plp.x, y - g->plp.y);
 			}
 			return ;
 		}

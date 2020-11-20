@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:25:06 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 21:52:54 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:28:57 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ char			*ft_slab(t_all *s, char *line, int *i)
 		}
 		else if (line[*i] != ' ')
 		{
-			write(2, "*** here the problem ***\n", 25);
 			free(slab);
 			return (NULL);
 		}

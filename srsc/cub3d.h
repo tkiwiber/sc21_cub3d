@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 22:03:21 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:37:10 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,19 @@ typedef struct	s_tex
 	unsigned int	fl;
 }				t_tex;
 
-typedef struct	s_pp
+typedef struct	s_plp
 {
 	double			x;
 	double			y;
 	int				size;
-}				t_pp;
+}				t_plp;
 
-typedef struct	s_pd
+typedef struct	s_pld
 {
 	double			x;
 	double			y;
 	double			a;
-}				t_pd;
+}				t_pld;
 
 typedef struct	s_ray
 {
@@ -162,8 +162,8 @@ typedef struct	s_all
 	t_err			err;
 	t_map			map;
 	t_tex			tex;
-	t_pp			pl;
-	t_pd			dir;
+	t_plp			plp;
+	t_pld			pld;
 	t_ray			ray;
 	t_hit			hit;
 	t_spr			*spr;
@@ -183,22 +183,12 @@ char			*ft_strchr(const char *s, int c);
 /*
 				get next line (gnl.c)
 */
-char	*get_line(char *stock);
-char	*stock_trim(char *stock);
-char	*buf_join(char *stock, char *buf);
-int		newline_check(char *stock, int read_size);
-char	*error(char *stock);
-int		get_next_line(int fd, char **line);
 
-
-
-/*
 char			*fill_line(char *root, char **line, int *err);
 int				ft_trunc_line(char **line, char **residue, char **p_n, char **buf);
 void			ft_strclr(char *g);
 int				get_next_line(int fd, char **line);
 int				free_str(char **s1, char **s2);
-*/
 
 /*
 				initialize all structures (init.c)
@@ -209,8 +199,8 @@ t_win			ft_init_win();
 t_map			ft_init_map();
 t_err			ft_init_err();
 t_img			ft_init_img();
-t_pp			ft_init_pp();
-t_pd			ft_init_pd();
+t_plp			ft_init_pp();
+t_pld			ft_init_pd();
 t_ray			ft_init_ray();
 t_hit			ft_init_hit();
 t_key			ft_init_key();
@@ -233,8 +223,8 @@ void			ft_set_position(t_all *g);
 int				ft_fill_map(t_all *g, char *line, int *i);
 int				ft_map_lenght(t_all *g, char *line);
 char			*ft_slab(t_all *g, char *line, int *i);
-int		ft_parcheck(t_all *s);
-int		ft_mapcheck(t_all *s);
+int		ft_parcheck(t_all *g);
+int		ft_mapcheck(t_all *g);
 
 /*
 				some helpful tools (tools.c)

@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 17:49:17 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 19:56:15 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:36:59 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,24 +78,24 @@ t_img	    	ft_init_img()
 	return (img);
 }
 
-t_pp			ft_init_pp()
+t_plp			ft_init_plp()
 {
-	t_pp	pp;
+	t_plp	plp;
 
-	pp.x = 0;
-	pp.y = 0;
-	pp.size = 1;
-	return (pp);
+	plp.x = 0;
+	plp.y = 0;
+	plp.size = 1;
+	return (plp);
 }
 
-t_pd			ft_init_pd()
+t_pld			ft_init_pld()
 {
-	t_pd	pd;
+	t_pld	pld;
 
-	pd.x = 1;
-	pd.y = 0;
-	pd.a = 0;
-	return (pd);
+	pld.x = 1;
+	pld.y = 0;
+	pld.a = 0;
+	return (pld);
 }
 
 t_ray			ft_init_ray()
@@ -159,8 +159,8 @@ void			ft_init_all(t_all *g)
 	g->tex = ft_init_tex();
 	g->ray = ft_init_ray();
 	g->hit = ft_init_hit();
-	g->pl = ft_init_pp();
-	g->dir = ft_init_pd();
+	g->plp = ft_init_plp();
+	g->pld = ft_init_pld();
 	g->key = ft_init_key();
 	g->spr = ft_init_spr();
 	g->stk = ft_init_stk();

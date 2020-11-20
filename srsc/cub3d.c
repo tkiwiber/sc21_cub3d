@@ -6,13 +6,13 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:29:58 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 21:09:50 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:33:35 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-
+/*
 void	uploadtex(t_all *g)
 {
 	int		i;
@@ -27,7 +27,7 @@ void	uploadtex(t_all *g)
 	ft_get_textures(g, &g->tex.no, "NO ./textures/purplestone.xpm", &i);
 	i = 0;
 	ft_get_textures(g, &g->tex.sp,  "SS ./textures/fox.xpm", &i);
-}
+}*/
 
 int		ft_sprite_list(t_all *g)
 {
@@ -58,61 +58,18 @@ int		ft_sprite_list(t_all *g)
 	return (1);
 }
 
-
-/*int		ft_fill_map(t_all *g, char *line)
-{
-	int		i, j;
-	char	**tmp;
-
-	j = -1;
-	i = -1;
-
-	if (!(tmp = malloc(sizeof(char *) * (g->map.y + 2))))
-		return (-1); // don't forget to handle with g.err
-
-	while (++i < g->map.y)
-		tmp[i] = g->map.arr[i];
-	{
-		if (!(tmp[i] = malloc(sizeof(char) * (g->map.x) + 1)))
-			return (-1); // don't forget to handle with g.err
-		ft_strlcpy(tmp[i], g->map.arr[i], g->map.x + 1);
-	}
-	if (!(tmp[g->map.y] = malloc(sizeof(char) * (g->map.x) + 1)))
-		return (-1); // don't forget to handle with g.err
-	else
-		ft_strlcpy(tmp[i], line, g->map.x + 1);
-
-	tmp[g->map.y + 1] = NULL;
-	
-	if (g->map.y > 0)
-		free (g->map.arr);
-
-	g->map.arr = tmp;
-
-	g->map.y += 1;
-	return (0);
-}*/
-
 int		ft_start(char *file, int save)
 {
 	t_all	g;
 
-	int		n;
-	char	**tmp;
-	int		i, j;
-
 	ft_init_all(&g);
-
-	ft_sprite_list(&g);
-
-	g.mlx.ptr = mlx_init();
-	ft_read_file(&g, file);
-	
+	g.mlx.ptr = mlx_init();	
 	if (ft_read_file(&g, file) == -1)
 		return (ft_close(&g, 0));
 
 	ft_init_movement(&g);
-
+	ft_sprite_list(&g);
+	
 	g.win.ptr = mlx_new_window(g.mlx.ptr, g.win.x, g.win.y, "CUB3D tkiwiber");
 
 	mlx_loop_hook(g.mlx.ptr, ft_update_frame, &g);

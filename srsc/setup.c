@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:58:27 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 22:04:29 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:41:52 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ void			ft_set_position(t_all *g)
 			c = g->map.arr[i][j];
 			if (c == 'N' || c == 'E' || c == 'S' || c == 'W')
 			{
-				g->pl.y = (double)i + 0.5;
-				g->pl.x = (double)j + 0.5;
-				g->dir.x = (c == 'E' || c == 'W') ? 1 : 0;
-				g->dir.x *= (c == 'W') ? -1 : 1;
-				g->dir.y = (c == 'S' || c == 'N') ? 1 : 0;
-				g->dir.y *= (c == 'N') ? -1 : 1;
+				g->plp.y = (double)i + 0.5;
+				g->plp.x = (double)j + 0.5;
+				g->pld.x = (c == 'E' || c == 'W') ? 1 : 0;
+				g->pld.x *= (c == 'W') ? -1 : 1;
+				g->pld.y = (c == 'S' || c == 'N') ? 1 : 0;
+				g->pld.y *= (c == 'N') ? -1 : 1;
 				g->err.p++;
 			}
 		}
@@ -82,8 +82,6 @@ int				ft_parse_line(t_all *g, char *l)
 {
 	int		i;
 	
-	i = 1;
-	write(2, ft_strjoin(l, "\n", &i), ft_strlen(l)+2);
 	i = 0;
 	ft_skip_whitespaces(l, &i);
 	if ((l[i] == '1' || g->err.m == 1) && l[i] != '\0')
@@ -114,8 +112,6 @@ int				ft_read_file(t_all *g, char *file)
 	char	*line;
 	int		fd;
 	int		ret;
-int		i; // to delete
-	
 	
 	ret = 1;
 	fd = open(file, O_RDONLY);
@@ -126,8 +122,6 @@ int		i; // to delete
 		ret = get_next_line(fd, &line);
 		if (ft_parse_line(g, line) == -1)
 			ret = -1;
-		i = 1;// to delete
-		write(2, ft_strjoin(line, "\n", &i), ft_strlen(line)+2);// to delete
 		free(line);
 	}
 	close (fd);

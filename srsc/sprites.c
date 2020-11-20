@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:31:13 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/19 16:30:03 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 10:43:26 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,13 @@ void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist)
 {
 	double	angle;
 
-	dirx = (dirx - g->pl.x) / dist;
-	diry = (diry - g->pl.y) / dist;
+	dirx = (dirx - g->plp.x) / dist;
+	diry = (diry - g->plp.y) / dist;
 	if (diry <= 0)
 		angle = acos(dirx) * 180 / M_PI;
 	else
 		angle = 360 - acos(dirx) * 180 / M_PI;
-	angle = g->dir.a - angle + 33;
+	angle = g->pld.a - angle + 33;
 	if (angle >= 180)
 		angle -= 360;
 	else if (angle <= -180)
@@ -111,15 +111,15 @@ void			ft_sprite(t_all *g)
 	int		i;
 	double	dist;
 
-	dist = hypot(g->dir.x, g->dir.y);
-	if (g->dir.y <= 0)
-		g->dir.a = acos(g->dir.x / dist) * 180 / M_PI;
+	dist = hypot(g->pld.x, g->pld.y);
+	if (g->pld.y <= 0)
+		g->pld.a = acos(g->pld.x / dist) * 180 / M_PI;
 	else
-		g->dir.a = 360 - acos(g->dir.x / dist) * 180 / M_PI;
+		g->pld.a = 360 - acos(g->pld.x / dist) * 180 / M_PI;
 	i = 0;
 	while (i < g->map.spr)
 	{
-		g->spr[i].d = hypot(g->spr[i].x - g->pl.x, g->spr[i].y - g->pl.y);
+		g->spr[i].d = hypot(g->spr[i].x - g->plp.x, g->spr[i].y - g->plp.y);
 		i++;
 	}
 	ft_sprite_order(g);
