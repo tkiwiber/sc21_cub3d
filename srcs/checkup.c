@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 12:00:13 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 17:20:46 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 16:06:32 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,26 @@ int		ft_check_map(t_all *g)
 	int		i;
 	int		j;
 
-	i = 0;
-	j = 0;
-	while (i < g->map.y)
+	i = -1;
+	while (++i < g->map.y)
 	{
-		j = 0;
-		while (j < g->map.x)
+		j = -1;
+		while (++j < g->map.x)
 		{
-			if (g->map.arr[i][j] != '1' && i == 0)
+			if ((g->map.arr[i][j] != '1' && g->map.arr[i][j] != ' ' && i == 0)
+			|| (g->map.arr[i][j] != '1' && g->map.arr[i][j] != ' ' && j == 0)
+			|| (g->map.arr[i][j] != '1' && g->map.arr[i][j] != ' '
+			&& j == g->map.x - 1) || (g->map.arr[i][j] != '1'
+			&& g->map.arr[i][j] != ' ' && i == g->map.y - 1))
 				return (-1);
-			else if (g->map.arr[i][j] != '1' && j == 0)
-				return (-1);
-			else if (g->map.arr[i][j] != '1' && j == g->map.x - 1)
-				return (-1);
-			else if (g->map.arr[i][j] != '1' && i == g->map.y - 1)
-				return (-1);
-			j++;
+			else if (g->map.arr[i][j] != '1' && g->map.arr[i][j] != ' ')
+				if (g->map.arr[i - 1][j] == ' ' || g->map.arr[i + 1][j] == ' '
+				|| g->map.arr[i][j - 1] == ' ' || g->map.arr[i][j + 1] == ' '
+				|| g->map.arr[i - 1][j - 1] == ' ' || g->map.arr[i + 1][j + 1] \
+				== ' ' || g->map.arr[i - 1][j + 1] == ' '
+				|| g->map.arr[i + 1][j - 1] == ' ')
+					return (-1);
 		}
-		i++;
 	}
 	return (1);
 }
@@ -88,7 +90,34 @@ int		ft_check_load(t_all *g)
 		return (ft_strerror(-17));
 	else if (g->err.p > 1)
 		return (ft_strerror(-18));
-	else if (ft_check_map(g) == -1)
-		return (ft_strerror(-19));
+	return (1);
+}
+
+int		ft_sprite_list(t_all *g)
+{
+	int		i;
+	int		j;
+	int		k;
+
+	if (g->spr != NULL)
+		free(g->spr);
+	if (!(g->spr = malloc(sizeof(t_spr) * g->map.spr)))
+		return (-1);
+	i = 0;
+	j = 0;
+	while (j < g->map.y)
+	{
+		k = 0;
+		while (k < g->map.x)
+		{
+			if (g->map.arr[j][k] == '2')
+			{
+				g->spr[i].y = (double)j + 0.5;
+				g->spr[i++].x = (double)k + 0.5;
+			}
+			k++;
+		}
+		j++;
+	}
 	return (1);
 }

@@ -2,7 +2,7 @@ NAME = cub3D
 
 CC = gcc
 
-CFLAGS = -O3 -Wall -Wextra -Werror
+CFLAGS = -g #-O3 -Wall -Wextra -Werror
 
 MLX = mlxopengl
 
@@ -59,8 +59,7 @@ $(NAME): $(OBJ)
 clean:
 	@echo "\033[0;31mCleaning..."
 	rm -rf $(OBJ)
-	rm -rf $(OBJ_MLX)
-	rm -rf libmlx.a
+	rm -rf $(MLX)/libmlx.a
 	rm -f screenshot.bmp
 	@echo "\033[0m"
 

@@ -6,17 +6,25 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 14:23:52 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 17:37:29 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 09:45:08 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	ft_create_frame(t_all *g)
+int		ft_create_frame(t_all *g)
 {
-	g->img.ptr = mlx_new_image(g->mlx.ptr, g->win.x, g->win.y);
-	g->img.adr = (unsigned int *)mlx_get_data_addr(g->img.ptr, \
-	&g->img.bpp, &g->img.sl, &g->img.end);
+	if (!(g->img.ptr = mlx_new_image(g->mlx.ptr, g->win.x, g->win.y)))
+	{
+		perror("IMG failed");
+		return (ft_close(g, 1));
+	}
+	if (!(g->img.adr = (unsigned int *)mlx_get_data_addr(g->img.ptr, \
+	&g->img.bpp, &g->img.sl, &g->img.end)))
+	{
+		perror("IMG PTR failed");
+		return (ft_close(g, 1));
+	}
 	g->stk = malloc(sizeof(t_stk) * g->win.x);
 	while (g->ray.i < g->win.x)
 	{
@@ -29,6 +37,7 @@ void	ft_create_frame(t_all *g)
 		g->ray.i++;
 	}
 	ft_sprite(g);
+	return (1);
 }
 
 void	ft_put_frame(t_all *g)

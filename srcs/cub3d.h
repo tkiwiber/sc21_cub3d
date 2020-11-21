@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 18:00:09 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 17:00:15 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct	s_err
 typedef struct	s_map
 {
 	char			**arr;
+	char			**tmp;
 	int				x;
 	int				y;
 	int				spr;
@@ -206,9 +207,10 @@ int				ft_set_colors(unsigned int *color, char *line, int *i);
 void			ft_set_position(t_all *g);
 
 int				ft_map_fill(t_all *g, char *line, int *i);
-int				ft_sprite_list(t_all *g);
+void			ft_map_transform(t_all *g);
 int				ft_map_lenght(t_all *g, char *line);
 char			*ft_map_line(t_all *g, char *line, int *i);
+int				ft_map_final(t_all *g);
 
 int				ft_check_load(t_all *g);
 int				ft_check_map(t_all *g);
@@ -218,7 +220,6 @@ int				ft_check_option(char *arg, char *mask);
 int				ft_atoi(char *line, int *i);
 int				ft_skip_whitespaces(char *line, int *pos);
 int				ft_strerror(int err);
-int				ft_strerror2(int err);
 int				ft_close(t_all *g, int win);
 
 int				ft_bmp_save(t_all *g);
@@ -230,7 +231,7 @@ int				ft_key_up(int key, t_all *g);
 int				ft_key_down(int key, t_all *g);
 int				ft_update_movement(t_all *g);
 
-void			ft_create_frame(t_all *g);
+int				ft_create_frame(t_all *g);
 int				ft_update_frame(t_all *g);
 void			ft_put_frame(t_all *g);
 
@@ -259,5 +260,6 @@ void			ft_sprite_draw(t_all *g, int loc, double dist);
 void			ft_sprite_loc(t_all *g, double dirx, double diry, double dist);
 void			ft_sprite_order(t_all *g);
 void			ft_sprite(t_all *g);
+int				ft_sprite_list(t_all *g);
 
 #endif

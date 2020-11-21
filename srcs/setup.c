@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:58:27 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 17:07:03 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 16:48:02 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,9 @@ int				ft_read_file(t_all *g, char *file)
 	close(fd);
 	if (ret == -1 || ret == -3)
 		return (ft_strerror(ret + 1));
+	ft_map_transform(g); /// dsfds
+	if (!(ft_map_final(g)))
+		return (-1);
 	ft_set_position(g);
 	g->spr = NULL;
 	ft_sprite_list(g);

@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 13:07:21 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 16:31:44 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/20 19:55:56 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int		ft_bmp_save(t_all *g)
 	int		fd;
 
 	ft_create_frame(g);
-	fd = open("bitmap.bmp", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
+	fd = open("screenshot.bmp", O_CREAT | O_WRONLY | O_TRUNC, S_IRWXU);
 	if (fd == -1)
 		return (ft_strerror(-1));
 	ft_bmp_header(g, fd);
