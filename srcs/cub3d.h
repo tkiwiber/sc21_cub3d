@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/21 17:00:15 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 19:33:22 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,12 @@
 # include "../mlxopengl/mlx.h"
 # include <unistd.h>
 # include <stdlib.h>
-# include <string.h>
 # include <math.h>
 # include <fcntl.h>
 # include <stdio.h>
-# include <stddef.h>
 
 # define NONE 0xFF000000
-# define WHITE 0x00FFFFFF
 # define BLACK 0x00000000
-# define RED 0x00FF0000
-# define GREEN 0x0000FF00
-# define BLUE 0x000000FF
-# define MAGENTA 0x00FF00FF
-# define YELLOW 0x00FFFF00
-# define LIGHTGRAY 0x00D3D3D3
-# define CYAN 0x0000FFFF
-# define GRAY 0x00808080
-# define SLATEGRAY 0x00708090
 
 # define ESC 53
 # define W 13

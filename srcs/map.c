@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:25:06 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/21 16:55:13 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/21 19:23:42 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int				ft_map_final(t_all *g)
 	int		j;
 
 	if (ft_check_map(g) == -1)
-	{	
+	{
 		g->err.m = 1;
 		perror("ERROR : BAD map (not closed)");
 		return (0);
@@ -97,7 +97,7 @@ void			ft_map_transform(t_all *g)
 		return ;
 	g->map.arr = tmp;
 	j = -1;
-	free(line);
+	line = NULL;
 	while (++j < g->map.y)
 	{
 		if (!(line = malloc(sizeof(char) * (g->map.x + 1))))
