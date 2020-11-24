@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:58:27 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/21 19:06:19 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/24 21:45:59 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ int				ft_set_resolution(t_all *g, char *line, int *i)
 	(*i)++;
 	g->win.x = ft_atoi(line, i);
 	g->win.y = ft_atoi(line, i);
-	if (g->win.x > 2560)
-		g->win.x = 2560;
-	if (g->win.y > 1400)
-		g->win.y = 1400;
+	if (g->win.x > 1280)
+		g->win.x = 1280;
+	if (g->win.y > 800)
+		g->win.y = 800;
 	ft_skip_whitespaces(line, i);
 	if (g->win.x <= 0 || g->win.y <= 0 || line[*i] != '\0')
 		return (-4);

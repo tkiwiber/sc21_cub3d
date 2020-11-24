@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:48:10 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/21 17:23:53 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/24 21:50:17 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int				ft_close(t_all *g, int win)
 {
 	if (win == -1)
 		exit(0);
-	else if (win == 1)
+	else
 	{
 		mlx_destroy_window(g->mlx.ptr, g->win.ptr);
 		free(g->mlx.ptr);
