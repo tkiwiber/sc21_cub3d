@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/27 19:30:16 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/21 19:33:22 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/30 11:09:16 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ int				ft_check_option(char *arg, char *mask);
 int				ft_atoi(char *line, int *i);
 int				ft_skip_whitespaces(char *line, int *pos);
 int				ft_strerror(int err);
+void			ft_free_structs(t_all *g);
 int				ft_close(t_all *g, int win);
 
 int				ft_bmp_save(t_all *g);

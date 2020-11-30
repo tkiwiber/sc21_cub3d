@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 19:48:10 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/24 21:50:17 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/30 11:08:41 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int				ft_strerror(int err)
 	return (-1);
 }
 
-static void		ft_free_structs(t_all *g)
+void		ft_free_structs(t_all *g)
 {
 	int		i;
 

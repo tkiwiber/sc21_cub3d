@@ -6,7 +6,7 @@
 /*   By: tkiwiber <alex_orlov@goodiez.app>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/20 13:07:21 by tkiwiber          #+#    #+#             */
-/*   Updated: 2020/11/20 19:55:56 by tkiwiber         ###   ########.fr       */
+/*   Updated: 2020/11/30 14:48:52 by tkiwiber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int		ft_bmp_save(t_all *g)
 	close(fd);
 	free(g->img.ptr);
 	free(g->img.adr);
-	ft_close(g, 0);
+	free(g->mlx.ptr);
+	ft_free_structs(g);
 	return (1);
 }
